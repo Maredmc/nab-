@@ -93,3 +93,11 @@ export default function BedConfigurator() {
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-10%20alle%2020.48.54-OSGH9uJQRkzNdgfMHgPvZzyxBO92cI.png"
               alt="Technical specifications"
+              className="w-full"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
