@@ -1,8 +1,9 @@
 "use client"
 
 import { useRef } from "react"
-import { useFrame } from "@react-three/fiber"
+import { useFrame, useLoader } from "@react-three/fiber"
 import { Box, Text } from "@react-three/drei"
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 interface BedModelProps {
   size: string
@@ -14,6 +15,7 @@ interface BedModelProps {
 
 export default function BedModel({ size, sideRails, evolutionKit, color, showDimensions }: BedModelProps) {
   const bedRef = useRef()
+  const obj = useLoader(OBJLoader, "/EC19080.obj");
 
   useFrame((state, delta) => {
     bedRef.current.rotation.y += delta * 0.2
@@ -31,50 +33,7 @@ export default function BedModel({ size, sideRails, evolutionKit, color, showDim
 
   return (
     <group ref={bedRef}>
-      {/* Bed frame */}
-      <Box args={[width, height, length]} position={[0, height / 2, 0]}>
-        <meshStandardMaterial color={bedColor} />
-      </Box>
-
-      {/* Mattress */}
-      <Box args={[width - 0.05, 0.2, length - 0.05]} position={[0, height + 0.1, 0]}>
-        <meshStandardMaterial color="#FFFFFF" />
-      </Box>
-
-      {/* Side rails */}
-      {sideRails !== "none" && (
-        <>
-          {/* Left rail */}
-          <Box
-            args={[0.05, 0.3, sideRails === "half" ? length / 2 : length]}
-            position={[-width / 2, height + 0.25, sideRails === "half" ? length / 4 : 0]}
-          >
-            <meshStandardMaterial color={bedColor} />
-          </Box>
-
-          {/* Right rail */}
-          <Box
-            args={[0.05, 0.3, sideRails === "half" ? length / 2 : length]}
-            position={[width / 2, height + 0.25, sideRails === "half" ? length / 4 : 0]}
-          >
-            <meshStandardMaterial color={bedColor} />
-          </Box>
-
-          {/* Headboard */}
-          {(sideRails === "full" || sideRails === "ends") && (
-            <Box args={[width, 0.5, 0.05]} position={[0, height + 0.35, -length / 2]}>
-              <meshStandardMaterial color={bedColor} />
-            </Box>
-          )}
-
-          {/* Footboard */}
-          {(sideRails === "full" || sideRails === "ends") && (
-            <Box args={[width, 0.5, 0.05]} position={[0, height + 0.35, length / 2]}>
-              <meshStandardMaterial color={bedColor} />
-            </Box>
-          )}
-        </>
-      )}
+      <primitive object={obj} scale={1} />
 
       {/* Dimensions */}
       {showDimensions && (
