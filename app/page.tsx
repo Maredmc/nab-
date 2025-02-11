@@ -9,7 +9,7 @@ import Navbar from "./components/Navbar"
 import { Expand, Ruler } from "lucide-react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 
-const BedModel = dynamic(() => import("@/components/BedModel"), { ssr: false });
+const BedModel = dynamic(() => import("../components/BedModel"), { ssr: false });
 
 export default function BedConfigurator() {
   const [bedSize, setBedSize] = useState("single")
