@@ -14,7 +14,7 @@ export default function BedConfigurator() {
   const [bedSize, setBedSize] = useState("single");
   const [sideRails, setSideRails] = useState("none");
   const [evolutionKit, setEvolutionKit] = useState("none");
-  const [bedColor, setBedColor] = useState("#F5DEB3"); // Colore predefinito (legno naturale)
+  const [isBioPaint, setIsBioPaint] = useState(false); // Stato per Bio Paint
   const [showDrawer, setShowDrawer] = useState(false);
   const [showDimensions, setShowDimensions] = useState(false);
   const [totalPrice, setTotalPrice] = useState(339);
@@ -43,7 +43,7 @@ export default function BedConfigurator() {
               size={bedSize}
               sideRails={sideRails}
               evolutionKit={evolutionKit}
-              color={bedColor}
+              isBioPaint={isBioPaint} // Passa lo stato Bio Paint
               showDimensions={showDimensions}
             />
             {/* OrbitControls per ruotare il modello manualmente */}
@@ -75,11 +75,11 @@ export default function BedConfigurator() {
             bedSize={bedSize}
             sideRails={sideRails}
             evolutionKit={evolutionKit}
-            bedColor={bedColor}
+            isBioPaint={isBioPaint} // Passa lo stato Bio Paint
             updateBedSize={setBedSize}
             updateSideRails={setSideRails}
             updateEvolutionKit={setEvolutionKit}
-            updateBedColor={setBedColor}
+            toggleBioPaint={() => setIsBioPaint(!isBioPaint)} // Aggiungi funzione per toggolare Bio Paint
             updateTotalPrice={setTotalPrice}
           />
         )}
