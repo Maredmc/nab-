@@ -1,9 +1,9 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { MeshStandardMaterial } from "three";
+import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
   size: string;
@@ -23,26 +23,20 @@ export default function BedModel({
   const bedRef = useRef<any>(null); // Riferimento al modello
   const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
 
-  // Centra il modello nel mondo
-  const centerModel = () => {
+  // Funzione per centrare il modello
+  useEffect(() => {
     if (gltf.scene && gltf.scene.children.length > 0) {
-      const boundingBox = new THREE.Box3().setFromObject(gltf.scene);
-      const center = boundingBox.getCenter(new THREE.Vector3());
+      const boundingBox = new Box3().setFromObject(gltf.scene);
+      const center = new Vector3();
+      boundingBox.getCenter(center);
       gltf.scene.position.sub(center); // Sposta il modello al centro
     }
-  };
-
-  // Ruota il modello intorno al proprio asse
-  useFrame((state, delta) => {
-    if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.1; // Rotazione lenta intorno all'asse Y
-    }
-  });
+  }, [gltf]);
 
   return (
     <group>
       {/* Gruppo contenitore centrato */}
-      <mesh ref={bedRef} position={[0, 0, 0]} onBeforeRender={centerModel}>
+      <mesh ref={bedRef} position={[0, 0, 0]}>
         <primitive object={gltf.scene} scale={[1, 1, 1]} />
         {/* Applica un materiale con colore del legno naturale */}
         {color && (
