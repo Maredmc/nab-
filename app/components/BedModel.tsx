@@ -29,7 +29,7 @@ export default function BedModel({ size, sideRails, evolutionKit, color, showDim
       {/* Dimensions */}
       {showDimensions && (
         <>
-          <Text position={[0, -0.1, 1]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="black">
+          <Text position={[0, -0.1, 1]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="#c29467">
             {"190 cm"}
           </Text>
           <Text
