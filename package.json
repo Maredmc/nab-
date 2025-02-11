@@ -59,7 +59,8 @@
     "vaul": "^0.9.6",
     "zod": "^3.24.1",
     "expo": "latest",
-    "three": "latest",
+    "three": "latest", // Three.js
+    "three-stdlib": "latest", // Aggiunto: three-stdlib per GLTFLoader e altri loader JSM
     "expo-gl": "latest",
     "expo-asset": "latest",
     "react-native": "latest",
