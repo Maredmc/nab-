@@ -46,7 +46,13 @@ export default function BedConfigurator() {
               color={bedColor}
               showDimensions={showDimensions}
             />
-            <OrbitControls enableZoom={true} enableRotate={true} enablePan={false} />
+            {/* OrbitControls per ruotare il modello manualmente */}
+            <OrbitControls
+              enableZoom={true}
+              enableRotate={true}
+              enablePan={false}
+              target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
+            />
           </Canvas>
           <div className="absolute bottom-4 right-4 space-x-2">
             <button
