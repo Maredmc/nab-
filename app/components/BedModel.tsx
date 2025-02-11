@@ -1,4 +1,4 @@
-ow"use client"
+"use client"
 
 import { useRef } from "react"
 import { useFrame, useLoader } from "@react-three/fiber"
@@ -29,14 +29,14 @@ export default function BedModel({ size, sideRails, evolutionKit, color, showDim
       {/* Dimensions */}
       {showDimensions && (
         <>
-          <Text position={[0, -0.1, 1]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="yellow">
+          <Text position={[0, -0.1, length / 2 + 0.1]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="yellow">
             {"190 cm"}
           </Text>
           <Text
             position={[0.5, -0.1, 0]}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             fontSize={0.1}
-            color="black"
+            color="yellow"
           >
             {"80 cm"}
           </Text>
