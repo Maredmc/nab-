@@ -43,7 +43,6 @@ export default function BedConfigurator() {
               sideRails={sideRails}
               evolutionKit={evolutionKit}
               color={bedColor}
-              showDrawer={showDrawer}
               showDimensions={showDimensions}
             />
             <OrbitControls />
@@ -103,4 +102,3 @@ export default function BedConfigurator() {
     </div>
   )
 }
-
