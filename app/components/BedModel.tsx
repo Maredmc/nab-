@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { useFrame, useLoader } from "@react-three/fiber"
 import { Text } from "@react-three/drei"
-import { OBJLoader } from "three-stdlib";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 interface BedModelProps {
   size: string
@@ -15,7 +15,7 @@ interface BedModelProps {
 
 export default function BedModel({ size, sideRails, evolutionKit, color, showDimensions }: BedModelProps) {
   const bedRef = useRef()
-  const obj = useLoader(OBJLoader, "/models/EC19080.obj");
+  const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
 
   useFrame((state, delta) => {
     if (bedRef.current) {
@@ -25,7 +25,7 @@ export default function BedModel({ size, sideRails, evolutionKit, color, showDim
 
   return (
     <group ref={bedRef}>
-      <primitive object={obj} scale={[1, 1, 1]} />
+      <primitive object={gltf.scene} scale={[1, 1, 1]} />
       {/* Dimensions */}
       {showDimensions && (
         <>
