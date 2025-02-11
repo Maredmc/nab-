@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"; // Importa GLTFLoader da three-stdlib
+import { GLTFLoader } from "three-stdlib"; // Importa GLTFLoader da three-stdlib
 import { TextureLoader } from "three"; // Importa TextureLoader da three
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
