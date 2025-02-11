@@ -2,8 +2,8 @@
 import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { GLTFLoader } from "three-stdlib"; // Importa GLTFLoader da three-stdlib
-import { TextureLoader } from "three"; // Importa TextureLoader da three
+import { GLTFLoader } from "three-stdlib";
+import { TextureLoader } from "three";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
@@ -26,6 +26,15 @@ export default function BedModel({
 
   // Carica la texture del legno
   const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg");
+
+  // Debug: Verifica il caricamento della texture
+  useEffect(() => {
+    if (woodTexture) {
+      console.log("Wood texture loaded successfully:", woodTexture);
+    } else {
+      console.error("Failed to load wood texture.");
+    }
+  }, [woodTexture]);
 
   // Funzione per centrare il modello
   useEffect(() => {
