@@ -45,3 +45,4 @@ export default function BedModel({ size, sideRails, evolutionKit, color, showDim
     </group>
   )
 }
+
