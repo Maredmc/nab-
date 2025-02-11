@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import { useFrame, useLoader } from "@react-three/fiber"
 import { Text } from "@react-three/drei"
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { OBJLoader } from "three-stdlib";
 
 interface BedModelProps {
   size: string
