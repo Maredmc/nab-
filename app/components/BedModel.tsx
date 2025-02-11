@@ -33,6 +33,13 @@ export default function BedModel({
     }
   }, [gltf]);
 
+  // Rotazione automatica lenta intorno all'asse Y
+  useFrame((state, delta) => {
+    if (bedRef.current) {
+      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
+    }
+  });
+
   return (
     <group>
       {/* Gruppo contenitore centrato */}
