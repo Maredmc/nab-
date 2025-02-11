@@ -2,7 +2,8 @@
 import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { GLTFLoader, TextureLoader } from "three/examples/jsm/loaders";
+import { GLTFLoader } from "three-stdlib/loaders/GLTFLoader"; // Importa GLTFLoader da three-stdlib
+import { TextureLoader } from "three"; // Importa TextureLoader da three
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
@@ -22,7 +23,9 @@ export default function BedModel({
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello
   const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
-  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // Carica la texture del legno
+
+  // Carica la texture del legno
+  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg");
 
   // Funzione per centrare il modello
   useEffect(() => {
@@ -57,7 +60,7 @@ export default function BedModel({
       </mesh>
 
       {/* Dimensioni visualizzate se richieste */}
-      {showDimensions && (
+      {showDimensions && gltf.scene && (
         <>
           <Text
             position={[0, -0.1, gltf.scene.children[0].geometry.boundingSphere.radius + 0.1]}
