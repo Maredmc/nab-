@@ -2,14 +2,14 @@
 import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader, TextureLoader } from "three/examples/jsm/loaders";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
   size: string;
   sideRails: string;
   evolutionKit: string;
-  color: string; // Colore del letto
+  isBioPaint: boolean; // Stato per Bio Paint
   showDimensions: boolean;
 }
 
@@ -17,11 +17,12 @@ export default function BedModel({
   size,
   sideRails,
   evolutionKit,
-  color,
+  isBioPaint,
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello
   const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
+  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // Carica la texture del legno
 
   // Funzione per centrare il modello
   useEffect(() => {
@@ -45,15 +46,14 @@ export default function BedModel({
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
         <primitive object={gltf.scene} scale={[1, 1, 1]} />
-        {/* Applica un materiale con colore del legno naturale */}
-        {color && (
-          <meshStandardMaterial
-            attach="material"
-            color={color}
-            roughness={0.7} // Simula il legno ruvido
-            metalness={0.1} // Riduce l'effetto metallico
-          />
-        )}
+        {/* Applica il materiale corretto in base allo stato */}
+        <meshStandardMaterial
+          attach="material"
+          map={isBioPaint ? null : woodTexture} // Usa la texture del legno se non è bio paint
+          color={isBioPaint ? "white" : "#F5DEB3"} // Colore bianco se bio paint
+          roughness={0.7} // Simula il legno ruvido
+          metalness={0.1} // Riduce l'effetto metallico
+        />
       </mesh>
 
       {/* Dimensioni visualizzate se richieste */}
