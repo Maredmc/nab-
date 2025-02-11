@@ -1,104 +1,47 @@
 "use client"
 
-import { useState } from "react"
-import { Canvas } from "@react-three/fiber"
-import { OrbitControls } from "@react-three/drei"
-import BedModel from "./components/BedModel"
-import ConfigPanel from "./components/ConfigPanel"
-import Navbar from "./components/Navbar"
-import { Expand, Ruler } from "lucide-react"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { useRef } from "react"
+import { useFrame, useLoader } from "@react-three/fiber"
+import { Text } from "@react-three/drei"
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
-export default function BedConfigurator() {
-  const [bedSize, setBedSize] = useState("single")
-  const [sideRails, setSideRails] = useState("none")
-  const [evolutionKit, setEvolutionKit] = useState("none")
-  const [bedColor, setBedColor] = useState("natural")
-  const [showDrawer, setShowDrawer] = useState(false)
-  const [showDimensions, setShowDimensions] = useState(false)
-  const [totalPrice, setTotalPrice] = useState(339)
-  const [isFullscreen, setIsFullscreen] = useState(false)
-  const [showTechSpecs, setShowTechSpecs] = useState(false)
+interface BedModelProps {
+  size: string
+  sideRails: string
+  evolutionKit: string
+  color: string
+  showDimensions: boolean
+}
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen()
-      setIsFullscreen(true)
-    } else {
-      document.exitFullscreen()
-      setIsFullscreen(false)
+export default function BedModel({ size, sideRails, evolutionKit, color, showDimensions }: BedModelProps) {
+  const bedRef = useRef()
+  const obj = useLoader(OBJLoader, "/EC19080.obj");
+
+  useFrame((state, delta) => {
+    if (bedRef.current) {
+      bedRef.current.rotation.y += delta * 0.2;
     }
-  }
+  })
 
   return (
-    <div className="h-screen bg-white flex flex-col">
-      <Navbar />
-      <div className="flex flex-1 overflow-hidden">
-        <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-          <Canvas camera={{ position: [0, 2, 5] }}>
-            <ambientLight intensity={0.5} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-            <BedModel
-              size={bedSize}
-              sideRails={sideRails}
-              evolutionKit={evolutionKit}
-              color={bedColor}
-              showDimensions={showDimensions}
-            />
-            <OrbitControls />
-          </Canvas>
-          <div className="absolute bottom-4 right-4 space-x-2">
-            <button
-              onClick={toggleFullscreen}
-              className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
-            >
-              <Expand className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => setShowTechSpecs(true)}
-              className="p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-lg hover:bg-white transition-all"
-            >
-              <Ruler className="w-6 h-6" />
-            </button>
-          </div>
-        </div>
-        {!isFullscreen && (
-          <ConfigPanel
-            bedSize={bedSize}
-            sideRails={sideRails}
-            evolutionKit={evolutionKit}
-            bedColor={bedColor}
-            updateBedSize={setBedSize}
-            updateSideRails={setSideRails}
-            updateEvolutionKit={setEvolutionKit}
-            updateBedColor={setBedColor}
-            updateTotalPrice={setTotalPrice}
-          />
-        )}
-      </div>
-
-      {/* Fixed bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
-        <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="text-xl font-medium">€{totalPrice}</div>
-          <button className="px-16 py-3 bg-[#79aea3] text-white rounded-lg hover:bg-[#6b9d93] transition-colors font-medium">
-            Aggiungi al carrello
-          </button>
-        </div>
-      </div>
-
-      {/* Technical specs dialog */}
-      <Dialog open={showTechSpecs} onOpenChange={setShowTechSpecs}>
-        <DialogContent className="max-w-3xl">
-          <div className="p-4">
-            <img
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-10%20alle%2020.48.54-OSGH9uJQRkzNdgfMHgPvZzyxBO92cI.png"
-              alt="Technical specifications"
-              className="w-full"
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
+    <group ref={bedRef}>
+      <primitive object={obj} scale={[1, 1, 1]} />
+      {/* Dimensions */}
+      {showDimensions && (
+        <>
+          <Text position={[0, -0.1, 1]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="black">
+            {"190 cm"}
+          </Text>
+          <Text
+            position={[0.5, -0.1, 0]}
+            rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+            fontSize={0.1}
+            color="black"
+          >
+            {"80 cm"}
+          </Text>
+        </>
+      )}
+    </group>
   )
 }
