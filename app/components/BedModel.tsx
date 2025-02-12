@@ -63,10 +63,10 @@ export default function BedModel({
 
       console.log("Dimensioni del modello:", size);
 
-      // Se il modello è troppo grande, ridimensionalo
+      // Ridimensiona il modello in modo proporzionale
       const maxDimension = Math.max(size.x, size.y, size.z);
-      if (maxDimension > 5) { // Imposta una soglia massima
-        mainModel.scene.scale.setScalar(5 / maxDimension); // Ridimensiona proporzionalmente
+      if (maxDimension > 0) { // Evita divisioni per zero
+        mainModel.scene.scale.setScalar(3 / maxDimension); // Adegua la scala al campo visivo
       }
     }
   }, [mainModel]);
@@ -93,8 +93,8 @@ export default function BedModel({
 
       {/* Modello principale */}
       {mainModel && (
-        <mesh ref={bedRef} position={[0, 0, -5]}>
-          <primitive object={mainModel.scene} scale={[1, 1, 1]} />
+        <mesh ref={bedRef} position={[0, 0, -3]}>
+          <primitive object={mainModel.scene} scale={mainModel ? [1, 1, 1] : [0, 0, 0]} />
           {/* Applica un materiale con colore del legno naturale */}
           {color && (
             <meshStandardMaterial
@@ -109,12 +109,12 @@ export default function BedModel({
 
       {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
       {evolutionKit === "piedini" && kitPiedini && (
-        <primitive object={kitPiedini.scene} position={[0, -0.5, -5]} scale={1} />
+        <primitive object={kitPiedini.scene} position={[0, -0.5, -3]} scale={1} />
       )}
 
       {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
       {evolutionKit === "piedoni" && kitPiedoni && (
-        <primitive object={kitPiedoni.scene} position={[0, -0.5, -5]} scale={1} />
+        <primitive object={kitPiedoni.scene} position={[0, -0.5, -3]} scale={1} />
       )}
 
       {/* Dimensioni visualizzate se richieste */}
@@ -124,7 +124,7 @@ export default function BedModel({
             position={[
               0,
               -0.1,
-              -5 + mainModel.scene.children[0].geometry.boundingSphere.radius + 0.1,
+              -3 + mainModel.scene.children[0].geometry.boundingSphere.radius + 0.1,
             ]}
             rotation={[-Math.PI / 2, 0, 0]}
             fontSize={0.1}
@@ -133,7 +133,7 @@ export default function BedModel({
             {"190 cm"}
           </Text>
           <Text
-            position={[0.5, -0.1, -5]}
+            position={[0.5, -0.1, -3]}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             fontSize={0.1}
             color="yellow"
