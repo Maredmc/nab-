@@ -21,7 +21,7 @@ export default function BedModel({
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello
-  const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
+  const gltf = useLoader(GLTFLoader, "/models/EARTH_senza_sponde.gltf");
 
   // Funzione per centrare il modello
   useEffect(() => {
