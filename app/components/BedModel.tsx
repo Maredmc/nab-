@@ -7,7 +7,7 @@ import { TextureLoader } from "three";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
-  size: string;
+  size: string; // Dimensioni del letto (es. "190x80", "160x80", ecc.)
   sideRails: string;
   evolutionKit: string;
   isBioPaint: boolean; // Stato per Bio Paint
@@ -34,13 +34,19 @@ export default function BedModel({
     }
   }, [woodTexture]);
 
-  // Funzione per centrare il modello
+  // Funzione per centrare e normalizzare il modello
   useEffect(() => {
     if (obj && obj.children.length > 0) {
       const boundingBox = new Box3().setFromObject(obj);
       const center = new Vector3();
       boundingBox.getCenter(center);
       obj.position.sub(center); // Sposta il modello al centro
+
+      // Normalizza le dimensioni del modello
+      const sizeX = boundingBox.max.x - boundingBox.min.x;
+      const sizeZ = boundingBox.max.z - boundingBox.min.z;
+      const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
+      obj.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
     }
   }, [obj]);
 
@@ -51,11 +57,21 @@ export default function BedModel({
     }
   });
 
+  // Funzione per calcolare la scala basata sulle dimensioni selezionate
+  const getScaleFactor = (size: string): number => {
+    const sizeMap: { [key: string]: number } = {
+      "190x80": 1, // Dimensione predefinita
+      "160x80": 0.84, // Scala proporzionale
+      "200x90": 1.05, // Scala proporzionale
+    };
+    return sizeMap[size] || 1; // Valore predefinito
+  };
+
   return (
     <group>
       {/* Gruppo contenitore centrato */}
-      <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={obj} scale={[1, 1, 1]} />
+      <mesh ref={bedRef} position={[0, 0, 0]} scale={getScaleFactor(size)}>
+        <primitive object={obj} />
         {/* Applica il materiale corretto in base allo stato */}
         <meshStandardMaterial
           attach="material"
