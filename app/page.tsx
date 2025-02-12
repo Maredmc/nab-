@@ -8,19 +8,22 @@ import Navbar from "./components/Navbar";
 import { Expand, Ruler } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
+// Importa dinamicamente il componente BedModel per evitare problemi con SSR
 const BedModel = dynamic(() => import("./components/BedModel"), { ssr: false });
 
 export default function BedConfigurator() {
-  const [bedSize, setBedSize] = useState("single");
+  // Stati per le opzioni di configurazione
+  const [bedSize, setBedSize] = useState("190x80"); // Dimensione predefinita
   const [sideRails, setSideRails] = useState("none");
   const [evolutionKit, setEvolutionKit] = useState("none");
   const [isBioPaint, setIsBioPaint] = useState(false); // Stato per Bio Paint
   const [showDrawer, setShowDrawer] = useState(false);
   const [showDimensions, setShowDimensions] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(339);
+  const [totalPrice, setTotalPrice] = useState(339); // Prezzo predefinito
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showTechSpecs, setShowTechSpecs] = useState(false);
 
+  // Funzione per attivare/disattivare la modalità a schermo intero
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen();
@@ -31,14 +34,29 @@ export default function BedConfigurator() {
     }
   };
 
+  // Aggiorna la dimensione del letto e il prezzo corrispondente
+  const updateBedSize = (newSize: string) => {
+    setBedSize(newSize);
+    if (newSize === "160x80") setTotalPrice(300);
+    else if (newSize === "200x90") setTotalPrice(380);
+    else setTotalPrice(339); // Prezzo predefinito
+  };
+
   return (
     <div className="h-screen bg-white flex flex-col">
+      {/* Navbar */}
       <Navbar />
+
+      {/* Contenitore principale */}
       <div className="flex flex-1 overflow-hidden">
+        {/* Sezione del modello 3D */}
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
           <Canvas camera={{ position: [0, 2, 5] }}>
-            <ambientLight intensity={0.5} />
-            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+            {/* Luci */}
+            <ambientLight intensity={0.7} />
+            <spotLight position={[15, 20, 15]} angle={0.3} penumbra={1} intensity={1.5} />
+
+            {/* Modello del letto */}
             <BedModel
               size={bedSize}
               sideRails={sideRails}
@@ -46,14 +64,18 @@ export default function BedConfigurator() {
               isBioPaint={isBioPaint} // Passa lo stato Bio Paint
               showDimensions={showDimensions}
             />
+
+            {/* OrbitControls per ruotare il modello manualmente */}
             <OrbitControls
               enableZoom={true}
               enableRotate={true}
               enablePan={false}
-              target={[0, 0, 0]}
-              autoRotate={false}
+              target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
+              autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
             />
           </Canvas>
+
+          {/* Pulsanti inferiori */}
           <div className="absolute bottom-4 right-4 space-x-2">
             <button
               onClick={toggleFullscreen}
@@ -69,21 +91,24 @@ export default function BedConfigurator() {
             </button>
           </div>
         </div>
+
+        {/* Sezione del pannello di configurazione */}
         {!isFullscreen && (
           <ConfigPanel
             bedSize={bedSize}
             sideRails={sideRails}
             evolutionKit={evolutionKit}
             isBioPaint={isBioPaint} // Passa lo stato Bio Paint
-            updateBedSize={setBedSize}
+            updateBedSize={updateBedSize} // Funzione per aggiornare la dimensione
             updateSideRails={setSideRails}
             updateEvolutionKit={setEvolutionKit}
-            toggleBioPaint={() => setIsBioPaint(!isBioPaint)} // Aggiungi funzione per toggolare Bio Paint
-            updateTotalPrice={setTotalPrice}
+            toggleBioPaint={() => setIsBioPaint(!isBioPaint)} // Toggla Bio Paint
+            updateTotalPrice={setTotalPrice} // Aggiorna il prezzo totale
           />
         )}
       </div>
-      {/* Fixed bottom bar */}
+
+      {/* Barra inferiore fissa */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
         <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="text-xl font-medium">€{totalPrice}</div>
@@ -92,13 +117,14 @@ export default function BedConfigurator() {
           </button>
         </div>
       </div>
-      {/* Technical specs dialog */}
+
+      {/* Dialog per specifiche tecniche */}
       <Dialog open={showTechSpecs} onOpenChange={setShowTechSpecs}>
         <DialogContent className="max-w-3xl">
           <div className="p-4">
             <img
               src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-02-10%20alle%2020.48.54-OSGH9uJQRkzNdgfMHgPvZzyxBO92cI.png"
-              alt="Technical specifications"
+              alt="Specifiche tecniche"
               className="w-full"
             />
           </div>
