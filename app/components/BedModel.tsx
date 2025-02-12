@@ -2,8 +2,7 @@
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 interface BedModelProps {
   size: string;
@@ -25,36 +24,28 @@ export default function BedModel({
   useEffect(() => {
     const loadModel = async () => {
       try {
-        // Carica il file .mtl prima del modello .obj
-        const mtlLoader = new MTLLoader();
-        mtlLoader.setPath("/models/");
-        const materials = await mtlLoader.loadAsync("EARTH_senza_sponde.mtl");
-        materials.preload();
+        const loader = new GLTFLoader();
+        const gltf = await loader.loadAsync("/models/EARTH_senza_sponde.glb");
 
-        // Carica il modello .obj con i materiali
-        const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials);
-        const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj");
-
-        if (model && model.children.length > 0) {
+        if (gltf.scene) {
           // Centra il modello
-          const boundingBox = new THREE.Box3().setFromObject(model);
+          const boundingBox = new THREE.Box3().setFromObject(gltf.scene);
           const center = new THREE.Vector3();
           boundingBox.getCenter(center);
-          model.position.sub(center);
+          gltf.scene.position.sub(center);
 
           // Normalizza le dimensioni
           const sizeX = boundingBox.max.x - boundingBox.min.x;
           const sizeZ = boundingBox.max.z - boundingBox.min.z;
           const scaleFactor = 1.9 / Math.max(sizeX, sizeZ); // Scala in base alla lunghezza di 190cm
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+          gltf.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
           // Sposta il modello sopra il pavimento
-          model.position.setY(-boundingBox.min.y * scaleFactor + 0.1);
+          gltf.scene.position.setY(-boundingBox.min.y * scaleFactor + 0.1);
 
           // Aggiungi il modello al gruppo
           if (bedRef.current) {
-            bedRef.current.add(model);
+            bedRef.current.add(gltf.scene);
           }
         }
       } catch (error) {
