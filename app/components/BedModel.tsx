@@ -23,56 +23,52 @@ export default function BedModel({
   const bedRef = useRef<THREE.Group>(null);
   const [modelLoaded, setModelLoaded] = useState(false);
 
-  useEffect(() => {
-    const loadModel = async () => {
-      try {
-        console.log("Caricamento del file .obj...");
-        const objLoader = new OBJLoader();
-        const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj"); // Assicurati che il nome sia corretto
+useEffect(() => {
+  const loadModel = async () => {
+    try {
+      console.log("Caricamento del file .obj...");
+      const objLoader = new OBJLoader();
+      const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj");
 
-        if (model && model.children.length > 0) {
-          console.log("Modello caricato:", model);
+      if (model && model.children.length > 0) {
+        console.log("Modello caricato:", model);
 
-          // Applica un materiale visibile
-          model.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = new THREE.MeshStandardMaterial({ color: 0x8b4513 }); // Colore marrone
-            }
-          });
-
-          // Centra il modello
-          const boundingBox = new THREE.Box3().setFromObject(model);
-          const center = new THREE.Vector3();
-          boundingBox.getCenter(center);
-          model.position.sub(center);
-
-          // Normalizza le dimensioni
-          const sizeX = boundingBox.max.x - boundingBox.min.x;
-          const sizeY = boundingBox.max.y - boundingBox.min.y;
-          const sizeZ = boundingBox.max.z - boundingBox.min.z;
-          console.log("Bounding Box:", boundingBox.min, boundingBox.max);
-
-          // Scala in base alla lunghezza di 190cm
-          const scaleFactor = 1.9 / Math.max(sizeX, sizeZ);
-          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-          // Aggiusta la posizione per evitare che affondi nel pavimento
-          model.position.setY(-boundingBox.min.y * scaleFactor);
-
-          // Aggiungi il modello al gruppo
-          if (bedRef.current) {
-            bedRef.current.add(model);
+        // Applica un materiale visibile
+        model.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.material = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
           }
+        });
 
-          setModelLoaded(true); // Segna il modello come caricato
+        // Centra il modello
+        const boundingBox = new THREE.Box3().setFromObject(model);
+        const center = new THREE.Vector3();
+        boundingBox.getCenter(center);
+        model.position.sub(center);
+
+        // Normalizza le dimensioni
+        const sizeX = boundingBox.max.x - boundingBox.min.x;
+        const sizeZ = boundingBox.max.z - boundingBox.min.z;
+        const scaleFactor = 1.9 / Math.max(sizeX, sizeZ); // Scala in base alla lunghezza di 190cm
+        model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+        // Aggiusta la posizione per evitare che affondi nel pavimento
+        model.position.setY(-boundingBox.min.y * scaleFactor + 0.1); // Sposta leggermente sopra il pavimento
+
+        // Aggiungi il modello al gruppo
+        if (bedRef.current) {
+          bedRef.current.add(model);
         }
-      } catch (error) {
-        console.error("Errore durante il caricamento del modello:", error);
-      }
-    };
 
-    loadModel();
-  }, []);
+        setModelLoaded(true); // Segna il modello come caricato
+      }
+    } catch (error) {
+      console.error("Errore durante il caricamento del modello:", error);
+    }
+  };
+
+  loadModel();
+}, []);
 
   // Rotazione automatica del letto
   useFrame((_, delta) => {
