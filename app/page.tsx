@@ -36,7 +36,7 @@ export default function BedConfigurator() {
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-          <Canvas camera={{ position: [0, 2, 5] }}>
+          <Canvas camera={{ position: [0, 2, 10] }}>
             <ambientLight intensity={0.5} />
             <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
             <BedModel
