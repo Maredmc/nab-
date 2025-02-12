@@ -51,41 +51,41 @@ export default function BedConfigurator() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sezione del modello 3D */}
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-          <Canvas camera={{ position: [0, 1.5, 7] }}> {/* Aumenta la distanza della telecamera */}
-            {/* Luci realistiche */}
-            <ambientLight intensity={0.5} />
-            <directionalLight
-              position={[5, 10, 5]}
-              intensity={1.5}
-              castShadow
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-              shadow-camera-far={50}
-              shadow-camera-left={-10}
-              shadow-camera-right={10}
-              shadow-camera-top={10}
-              shadow-camera-bottom={-10}
-            />
-            <pointLight position={[1, 2, 3]} intensity={0.8} />
+<Canvas camera={{ position: [0, 1.5, 10] }}> {/* Allontana ulteriormente la telecamera */}
+  {/* Luci realistiche */}
+  <ambientLight intensity={0.5} />
+  <directionalLight
+    position={[5, 10, 5]}
+    intensity={1.5}
+    castShadow
+    shadow-mapSize-width={1024}
+    shadow-mapSize-height={1024}
+    shadow-camera-far={50}
+    shadow-camera-left={-10}
+    shadow-camera-right={10}
+    shadow-camera-top={10}
+    shadow-camera-bottom={-10}
+  />
+  <pointLight position={[1, 2, 3]} intensity={0.8} />
 
-            {/* Modello del letto */}
-            <BedModel
-              size={bedSize}
-              sideRails={sideRails}
-              evolutionKit={evolutionKit}
-              isBioPaint={isBioPaint}
-              showDimensions={showDimensions}
-            />
+  {/* Modello del letto */}
+  <BedModel
+    size="190x80"
+    sideRails="none"
+    evolutionKit="none"
+    isBioPaint={false}
+    showDimensions={false}
+  />
 
-            {/* OrbitControls per ruotare il modello manualmente */}
-            <OrbitControls
-              enableZoom={true}
-              enableRotate={true}
-              enablePan={false}
-              target={[0, 0, 0]}
-              autoRotate={false}
-            />
-          </Canvas>
+  {/* OrbitControls per ruotare il modello manualmente */}
+  <OrbitControls
+    enableZoom={true}
+    enableRotate={true}
+    enablePan={false}
+    target={[0, 0, 0]}
+    autoRotate={false}
+  />
+</Canvas>
 
           {/* Pulsanti inferiori */}
           <div className="absolute bottom-4 right-4 space-x-2">
