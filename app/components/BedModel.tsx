@@ -2,6 +2,7 @@
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 interface BedModelProps {
@@ -24,17 +25,18 @@ export default function BedModel({
   useEffect(() => {
     const loadModel = async () => {
       try {
+        // Carica il file .mtl prima del modello .obj
+        const mtlLoader = new MTLLoader();
+        mtlLoader.setPath("/models/");
+        const materials = await mtlLoader.loadAsync("EARTH_senza_sponde.mtl");
+        materials.preload();
+
+        // Carica il modello .obj con i materiali
         const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
         const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj");
 
         if (model && model.children.length > 0) {
-          // Applica un materiale visibile
-          model.traverse((child) => {
-            if (child instanceof THREE.Mesh) {
-              child.material = new THREE.MeshStandardMaterial({ color: 0x8b4513 }); // Colore marrone
-            }
-          });
-
           // Centra il modello
           const boundingBox = new THREE.Box3().setFromObject(model);
           const center = new THREE.Vector3();
