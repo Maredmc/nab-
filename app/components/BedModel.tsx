@@ -94,7 +94,7 @@ export default function BedModel({
       {/* Modello principale */}
       {mainModel && (
         <mesh ref={bedRef} position={[0, 0, -3]}>
-          <primitive object={mainModel.scene} scale={mainModel ? [1, 1, 1] : [0, 0, 0]} />
+          <primitive object={mainModel.scene} scale={mainModel ? [1, 1, 1] : [1, 1, 1]} />
           {/* Applica un materiale con colore del legno naturale */}
           {color && (
             <meshStandardMaterial
