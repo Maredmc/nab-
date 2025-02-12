@@ -49,7 +49,7 @@ export default function BedModel({
   // Rotazione automatica lenta intorno all'asse Y
   useFrame((state, delta) => {
     if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
+      bedRef.current.rotation.y += delta * 0.03; // Rotazione molto lenta
     }
   });
 
@@ -57,7 +57,7 @@ export default function BedModel({
     <group>
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[1, 1, 1]} />
+        <primitive object={gltf.scene} scale={[2, 2, 2]} />
         {/* Applica il materiale corretto in base allo stato */}
         <meshStandardMaterial
           attach="material"
