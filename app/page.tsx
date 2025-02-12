@@ -51,7 +51,7 @@ export default function BedConfigurator() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sezione del modello 3D */}
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-<Canvas camera={{ position: [0, 2, 5] }}>
+<Canvas camera={{ position: [0, 3, 7] }}> {/* Aumenta la distanza della telecamera */}
   {/* Luci realistiche */}
   <ambientLight intensity={0.5} /> {/* Luce ambientale soft */}
   <directionalLight
