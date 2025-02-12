@@ -22,7 +22,7 @@ export default function BedModel({
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello
-  const obj = useLoader(OBJLoader, "/models/Lettino EARTH _senza sponde.obj"); // Carica il file OBJ
+  const obj = useLoader(OBJLoader, "/models/Lettino EARTH _senza_sponde.obj"); // Carica il file OBJ
   const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // Carica la texture del legno
 
   // Debug: Verifica il caricamento della texture
