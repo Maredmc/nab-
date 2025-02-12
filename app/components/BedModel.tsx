@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect } from "react";
-import { useFrame, useLoader, group } from "@react-three/fiber"; // Importa group
+import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
@@ -41,10 +41,10 @@ export default function BedModel({
   });
 
   return (
-    <group> {/* Usa il componente group */}
+    <group>
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[0.1, 0.1, 0.1]} /> {/* Scala ridotta */}
+        <primitive object={gltf.scene} scale={[0.2, 0.2, 0.2]} /> {/* Scala ridotta */}
         {/* Applica un materiale con colore del legno naturale */}
         {color && (
           <meshStandardMaterial
@@ -58,26 +58,12 @@ export default function BedModel({
 
       {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
       {evolutionKit === "piedini" && (
-        <primitive
-          object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene}
-          position={[0, -0.5, 0]}
-          scale={0.5} {/* Aumenta la scala */}
-          onError={(error) =>
-            console.error("Errore durante il caricamento di Kit_piedini.gltf:", error)
-          }
-        />
+        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene} position={[0, -0.5, 0]} scale={0.2} />
       )}
 
       {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
       {evolutionKit === "piedoni" && (
-        <primitive
-          object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene}
-          position={[0, -0.5, 0]}
-          scale={0.5} {/* Aumenta la scala */}
-          onError={(error) =>
-            console.error("Errore durante il caricamento di Kit_piedoni.gltf:", error)
-          }
-        />
+        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene} position={[0, -0.5, 0]} scale={0.2} />
       )}
 
       {/* Dimensioni visualizzate se richieste */}
