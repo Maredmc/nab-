@@ -5,7 +5,6 @@ import { Text } from "@react-three/drei";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
-import { TextureLoader } from "three";
 
 interface BedModelProps {
   size: string; // Dimensioni del letto (es. "190x80", "160x80", ecc.)
@@ -26,34 +25,38 @@ export default function BedModel({
 
   useEffect(() => {
     const loadModel = async () => {
-      // Carica il file .mtl
-      const mtlLoader = new MTLLoader();
-      mtlLoader.setTexturePath("/models/"); // Imposta il percorso delle texture
-      const materials = await mtlLoader.loadAsync("/models/Earth_senza_sponde.mtl");
-      materials.preload(); // Pre-carica i materiali
+      try {
+        // Carica il file .mtl
+        const mtlLoader = new MTLLoader();
+        mtlLoader.setTexturePath("/models/"); // Imposta il percorso delle texture
+        const materials = await mtlLoader.loadAsync("/models/Earth_senza_sponde.mtl");
+        materials.preload(); // Pre-carica i materiali
 
-      // Carica il file .obj con i materiali
-      const objLoader = new OBJLoader();
-      objLoader.setMaterials(materials); // Applica i materiali al modello
-      const model = await objLoader.loadAsync("/models/Earth_senza_sponde.obj");
+        // Carica il file .obj con i materiali
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials); // Applica i materiali al modello
+        const model = await objLoader.loadAsync("/models/Earth_senza_sponde.obj");
 
-      if (model && model.children.length > 0) {
-        // Centra il modello
-        const boundingBox = new THREE.Box3().setFromObject(model);
-        const center = new THREE.Vector3();
-        boundingBox.getCenter(center);
-        model.position.sub(center);
+        if (model && model.children.length > 0) {
+          // Centra il modello
+          const boundingBox = new THREE.Box3().setFromObject(model);
+          const center = new THREE.Vector3();
+          boundingBox.getCenter(center);
+          model.position.sub(center);
 
-        // Normalizza le dimensioni del modello
-        const sizeX = boundingBox.max.x - boundingBox.min.x;
-        const sizeZ = boundingBox.max.z - boundingBox.min.z;
-        const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
-        model.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
+          // Normalizza le dimensioni del modello
+          const sizeX = boundingBox.max.x - boundingBox.min.x;
+          const sizeZ = boundingBox.max.z - boundingBox.min.z;
+          const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
+          model.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
 
-        // Aggiungi il modello al riferimento
-        if (bedRef.current) {
-          bedRef.current.add(model);
+          // Aggiungi il modello al riferimento
+          if (bedRef.current) {
+            bedRef.current.add(model);
+          }
         }
+      } catch (error) {
+        console.error("Errore durante il caricamento del modello:", error);
       }
     };
 
