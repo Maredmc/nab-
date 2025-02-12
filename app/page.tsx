@@ -51,9 +51,9 @@ export default function BedConfigurator() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sezione del modello 3D */}
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-<Canvas camera={{ position: [0, 3, 7] }}> {/* Aumenta la distanza della telecamera */}
+<Canvas camera={{ position: [0, 3, 10] }}> {/* Aumenta la distanza della telecamera */}
   {/* Luci realistiche */}
-  <ambientLight intensity={0.5} /> {/* Luce ambientale soft */}
+  <ambientLight intensity={0.5} />
   <directionalLight
     position={[5, 10, 5]}
     intensity={1.5}
@@ -65,15 +65,15 @@ export default function BedConfigurator() {
     shadow-camera-right={10}
     shadow-camera-top={10}
     shadow-camera-bottom={-10}
-  /> {/* Luce direzionale con ombre */}
-  <pointLight position={[1, 2, 3]} intensity={0.8} /> {/* Luce puntiforme per dettagli */}
+  />
+  <pointLight position={[1, 2, 3]} intensity={0.8} />
 
   {/* Modello del letto */}
   <BedModel
     size={bedSize}
     sideRails={sideRails}
     evolutionKit={evolutionKit}
-    isBioPaint={isBioPaint} // Passa lo stato Bio Paint
+    isBioPaint={isBioPaint}
     showDimensions={showDimensions}
   />
 
@@ -82,8 +82,8 @@ export default function BedConfigurator() {
     enableZoom={true}
     enableRotate={true}
     enablePan={false}
-    target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
-    autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
+    target={[0, 0, 0]}
+    autoRotate={false}
   />
 </Canvas>
 
