@@ -1,5 +1,4 @@
 "use client"
-
 import { useEffect, useState, useRef } from "react"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
@@ -64,12 +63,10 @@ export default function ConfigPanel({
         setScrollProgress(progress)
       }
     }
-
     const panel = panelRef.current
     if (panel) {
       panel.addEventListener("scroll", handleScroll)
     }
-
     return () => {
       if (panel) {
         panel.removeEventListener("scroll", handleScroll)
@@ -79,7 +76,6 @@ export default function ConfigPanel({
 
   useEffect(() => {
     let price = 339 // Prezzo base
-
     // Calcolo del prezzo in base alle selezioni
     if (bedSize === "one_and_half") price += 50
     if (sideRails === "half") price += 30
@@ -89,7 +85,6 @@ export default function ConfigPanel({
     if (evolutionKit === "large") price += 40
     if (bedColor === "white") price += 25
     if (showDrawer) price += 100 // Prezzo ipotetico per il cassettone
-
     updateTotalPrice(price)
   }, [bedSize, sideRails, evolutionKit, bedColor, showDrawer, updateTotalPrice])
 
@@ -124,7 +119,6 @@ export default function ConfigPanel({
               </div>
             </div>
           </div>
-
           <div className="space-y-4">
             <Label className="text-lg">Colore</Label>
             <div className="grid grid-cols-2 gap-4">
@@ -144,7 +138,6 @@ export default function ConfigPanel({
               ))}
             </div>
           </div>
-
           <div className="space-y-4">
             <Label className="text-lg">Dimensione</Label>
             {bedSizes.map((size) => (
@@ -163,7 +156,6 @@ export default function ConfigPanel({
               </button>
             ))}
           </div>
-
           <div className="space-y-4">
             <Label className="text-lg">Sponde protettive</Label>
             {sideRailOptions.map((option) => (
@@ -179,7 +171,6 @@ export default function ConfigPanel({
               </button>
             ))}
           </div>
-
           <div className="space-y-4">
             <Label className="text-lg">Kit evolutivo</Label>
             {evolutionKitOptions.map((option) => (
@@ -195,7 +186,6 @@ export default function ConfigPanel({
               </button>
             ))}
           </div>
-
           {showDrawer && (
             <div className="space-y-4">
               <Label className="text-lg">Cassettone</Label>
@@ -215,4 +205,3 @@ export default function ConfigPanel({
     </div>
   )
 }
-
