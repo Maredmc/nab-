@@ -55,6 +55,7 @@ export default function BedConfigurator() {
             {/* Luci */}
             <ambientLight intensity={0.7} />
             <spotLight position={[15, 20, 15]} angle={0.3} penumbra={1} intensity={1.5} />
+            <directionalLight position={[10, 10, 5]} intensity={0.8} />
 
             {/* Modello del letto */}
             <BedModel
