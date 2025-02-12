@@ -1,10 +1,11 @@
 "use client";
 import { useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader"; // Importa OBJLoader
+import * as THREE from "three";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { TextureLoader } from "three";
-import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
 interface BedModelProps {
   size: string; // Dimensioni del letto (es. "190x80", "160x80", ecc.)
@@ -21,41 +22,43 @@ export default function BedModel({
   isBioPaint,
   showDimensions,
 }: BedModelProps) {
-  const bedRef = useRef<any>(null); // Riferimento al modello
-  const obj = useLoader(OBJLoader, "/models/Lettino EARTH _senza_sponde.obj"); // Carica il file OBJ
-  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // Carica la texture del legno
+  const bedRef = useRef<THREE.Group>(null);
 
-  // Debug: Verifica il caricamento della texture
   useEffect(() => {
-    if (woodTexture) {
-      console.log("Wood texture loaded successfully:", woodTexture);
-    } else {
-      console.error("Failed to load wood texture.");
-    }
-  }, [woodTexture]);
+    const loadModel = async () => {
+      // Carica il file .mtl
+      const mtlLoader = new MTLLoader();
+      mtlLoader.setTexturePath("/models/"); // Imposta il percorso delle texture
+      const materials = await mtlLoader.loadAsync("/models/Earth_senza_sponde.mtl");
+      materials.preload(); // Pre-carica i materiali
 
-  // Funzione per centrare e normalizzare il modello
-  useEffect(() => {
-    if (obj && obj.children.length > 0) {
-      const boundingBox = new Box3().setFromObject(obj);
-      const center = new Vector3();
-      boundingBox.getCenter(center);
-      obj.position.sub(center); // Sposta il modello al centro
+      // Carica il file .obj con i materiali
+      const objLoader = new OBJLoader();
+      objLoader.setMaterials(materials); // Applica i materiali al modello
+      const model = await objLoader.loadAsync("/models/Earth_senza_sponde.obj");
 
-      // Normalizza le dimensioni del modello
-      const sizeX = boundingBox.max.x - boundingBox.min.x;
-      const sizeZ = boundingBox.max.z - boundingBox.min.z;
-      const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
-      obj.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
-    }
-  }, [obj]);
+      if (model && model.children.length > 0) {
+        // Centra il modello
+        const boundingBox = new THREE.Box3().setFromObject(model);
+        const center = new THREE.Vector3();
+        boundingBox.getCenter(center);
+        model.position.sub(center);
 
-  // Rotazione automatica lenta intorno all'asse Y
-  useFrame((state, delta) => {
-    if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
-    }
-  });
+        // Normalizza le dimensioni del modello
+        const sizeX = boundingBox.max.x - boundingBox.min.x;
+        const sizeZ = boundingBox.max.z - boundingBox.min.z;
+        const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
+        model.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
+
+        // Aggiungi il modello al riferimento
+        if (bedRef.current) {
+          bedRef.current.add(model);
+        }
+      }
+    };
+
+    loadModel();
+  }, []);
 
   // Funzione per calcolare la scala basata sulle dimensioni selezionate
   const getScaleFactor = (size: string): number => {
@@ -67,26 +70,20 @@ export default function BedModel({
     return sizeMap[size] || 1; // Valore predefinito
   };
 
-  return (
-    <group>
-      {/* Gruppo contenitore centrato */}
-      <mesh ref={bedRef} position={[0, 0, 0]} scale={getScaleFactor(size)}>
-        <primitive object={obj} />
-        {/* Applica il materiale corretto in base allo stato */}
-        <meshStandardMaterial
-          attach="material"
-          map={isBioPaint ? null : woodTexture} // Usa la texture del legno se non è bio paint
-          color={isBioPaint ? "white" : "#F5DEB3"} // Colore bianco se bio paint
-          roughness={0.7} // Simula il legno ruvido
-          metalness={0.1} // Riduce l'effetto metallico
-        />
-      </mesh>
+  // Rotazione automatica lenta intorno all'asse Y
+  useFrame((state, delta) => {
+    if (bedRef.current) {
+      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
+    }
+  });
 
+  return (
+    <group ref={bedRef} scale={getScaleFactor(size)}>
       {/* Dimensioni visualizzate se richieste */}
-      {showDimensions && obj && (
+      {showDimensions && (
         <>
           <Text
-            position={[0, -0.1, obj.geometry.boundingSphere.radius + 0.1]}
+            position={[0, -0.1, 0.95]}
             rotation={[-Math.PI / 2, 0, 0]}
             fontSize={0.1}
             color="yellow"
@@ -94,7 +91,7 @@ export default function BedModel({
             {"190 cm"}
           </Text>
           <Text
-            position={[0.5, -0.1, 0]}
+            position={[0.4, -0.1, 0]}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             fontSize={0.1}
             color="yellow"
