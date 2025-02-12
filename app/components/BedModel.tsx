@@ -27,7 +27,7 @@ export default function BedModel({
       try {
         // Carica il file .obj
         const objLoader = new OBJLoader();
-        const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj");
+        const model = await objLoader.loadAsync("/models/EARTH _senza_sponde.obj");
 
         if (model && model.children.length > 0) {
           // Applica un materiale semplice a tutte le mesh del modello
