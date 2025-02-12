@@ -4,7 +4,6 @@ import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
-import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 
 interface BedModelProps {
   size: string; // Dimensioni del letto (es. "190x80", "160x80", ecc.)
@@ -26,18 +25,18 @@ export default function BedModel({
   useEffect(() => {
     const loadModel = async () => {
       try {
-        // Carica il file .mtl
-        const mtlLoader = new MTLLoader();
-        mtlLoader.setTexturePath("/models/"); // Imposta il percorso delle texture
-        const materials = await mtlLoader.loadAsync("/models/Earth_senza_sponde.mtl");
-        materials.preload(); // Pre-carica i materiali
-
-        // Carica il file .obj con i materiali
+        // Carica il file .obj
         const objLoader = new OBJLoader();
-        objLoader.setMaterials(materials); // Applica i materiali al modello
         const model = await objLoader.loadAsync("/models/Earth_senza_sponde.obj");
 
         if (model && model.children.length > 0) {
+          // Applica un materiale semplice a tutte le mesh del modello
+          model.traverse((child) => {
+            if (child instanceof THREE.Mesh) {
+              child.material = new THREE.MeshStandardMaterial({ color: 0xffffff }); // Colore bianco uniforme
+            }
+          });
+
           // Centra il modello
           const boundingBox = new THREE.Box3().setFromObject(model);
           const center = new THREE.Vector3();
