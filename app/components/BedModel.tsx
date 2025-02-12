@@ -25,7 +25,7 @@ export default function BedModel({
     const loadModel = async () => {
       try {
         const loader = new GLTFLoader();
-        const gltf = await loader.loadAsync("/models/EARTH_senza_sponde.glb");
+        const gltf = await loader.loadAsync("/models/EARTH_senza_sponde.gltf");
 
         if (gltf.scene) {
           // Centra il modello
