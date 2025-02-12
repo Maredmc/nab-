@@ -25,15 +25,17 @@ export default function BedModel({
   useEffect(() => {
     const loadModel = async () => {
       try {
-        // Carica il file .obj
+        console.log("Caricamento del file .obj...");
         const objLoader = new OBJLoader();
-        const model = await objLoader.loadAsync("/models/EARTH _senza_sponde.obj");
+        const model = await objLoader.loadAsync("/models/EARTH _senza_sponde.obj"); // Nome corretto del file
 
         if (model && model.children.length > 0) {
-          // Applica un materiale semplice a tutte le mesh del modello
+          console.log("Modello caricato:", model);
+
+          // Applica un materiale marrone a tutte le mesh del modello
           model.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-              child.material = new THREE.MeshStandardMaterial({ color: 0xffffff }); // Colore bianco uniforme
+              child.material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Colore marrone
             }
           });
 
@@ -81,6 +83,12 @@ export default function BedModel({
 
   return (
     <group ref={bedRef} scale={getScaleFactor(size)}>
+      {/* Pavimento della stanza */}
+      <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[10, 10]} />
+        <meshStandardMaterial color="gray" roughness={0.8} />
+      </mesh>
+
       {/* Dimensioni visualizzate se richieste */}
       {showDimensions && (
         <>
