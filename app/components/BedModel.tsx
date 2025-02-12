@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
-import { GLTFLoader } from "three-stdlib";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader"; // Importa OBJLoader
 import { TextureLoader } from "three";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
 
@@ -22,10 +22,8 @@ export default function BedModel({
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello
-  const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
-
-  // Carica la texture del legno
-  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg");
+  const obj = useLoader(OBJLoader, "/models/Lettino EARTH _senza sponde.obj"); // Carica il file OBJ
+  const woodTexture = useLoader(TextureLoader, "/textures/wood.jpg"); // Carica la texture del legno
 
   // Debug: Verifica il caricamento della texture
   useEffect(() => {
@@ -38,13 +36,13 @@ export default function BedModel({
 
   // Funzione per centrare il modello
   useEffect(() => {
-    if (gltf.scene && gltf.scene.children.length > 0) {
-      const boundingBox = new Box3().setFromObject(gltf.scene);
+    if (obj && obj.children.length > 0) {
+      const boundingBox = new Box3().setFromObject(obj);
       const center = new Vector3();
       boundingBox.getCenter(center);
-      gltf.scene.position.sub(center); // Sposta il modello al centro
+      obj.position.sub(center); // Sposta il modello al centro
     }
-  }, [gltf]);
+  }, [obj]);
 
   // Rotazione automatica lenta intorno all'asse Y
   useFrame((state, delta) => {
@@ -57,7 +55,7 @@ export default function BedModel({
     <group>
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[1, 1, 1]} />
+        <primitive object={obj} scale={[1, 1, 1]} />
         {/* Applica il materiale corretto in base allo stato */}
         <meshStandardMaterial
           attach="material"
@@ -69,10 +67,10 @@ export default function BedModel({
       </mesh>
 
       {/* Dimensioni visualizzate se richieste */}
-      {showDimensions && gltf.scene && (
+      {showDimensions && obj && (
         <>
           <Text
-            position={[0, -0.1, gltf.scene.children[0].geometry.boundingSphere.radius + 0.1]}
+            position={[0, -0.1, obj.geometry.boundingSphere.radius + 0.1]}
             rotation={[-Math.PI / 2, 0, 0]}
             fontSize={0.1}
             color="yellow"
