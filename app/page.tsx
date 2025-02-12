@@ -13,7 +13,7 @@ const BedModel = dynamic(() => import("./components/BedModel"), { ssr: false });
 export default function BedConfigurator() {
   const [bedSize, setBedSize] = useState("single");
   const [sideRails, setSideRails] = useState("none");
-  const [evolutionKit, setEvolutionKit] = useState("none");
+  const [evolutionKit, setEvolutionKit] = useState("none"); // Stato per piedini/piedoni
   const [bedColor, setBedColor] = useState("#F5DEB3"); // Colore predefinito (legno naturale)
   const [showDrawer, setShowDrawer] = useState(false);
   const [showDimensions, setShowDimensions] = useState(false);
@@ -42,7 +42,7 @@ export default function BedConfigurator() {
             <BedModel
               size={bedSize}
               sideRails={sideRails}
-              evolutionKit={evolutionKit}
+              evolutionKit={evolutionKit} // Passa lo stato evolutionKit
               color={bedColor}
               showDimensions={showDimensions}
             />
@@ -73,11 +73,11 @@ export default function BedConfigurator() {
           <ConfigPanel
             bedSize={bedSize}
             sideRails={sideRails}
-            evolutionKit={evolutionKit}
+            evolutionKit={evolutionKit} // Passa lo stato evolutionKit
             bedColor={bedColor}
             updateBedSize={setBedSize}
             updateSideRails={setSideRails}
-            updateEvolutionKit={setEvolutionKit}
+            updateEvolutionKit={setEvolutionKit} // Gestione dello stato evolutionKit
             updateBedColor={setBedColor}
             updateTotalPrice={setTotalPrice}
           />
