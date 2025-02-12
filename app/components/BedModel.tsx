@@ -47,13 +47,27 @@ export default function BedModel({
     loader.load("/models/Kit_piedoni.gltf", setKitPiedoni);
   }, []);
 
-  // Funzione per centrare il modello principale
+  // Funzione per centrare e ridimensionare il modello
   useEffect(() => {
     if (mainModel && mainModel.scene) {
       const boundingBox = new Box3().setFromObject(mainModel.scene);
       const center = new Vector3();
       boundingBox.getCenter(center);
-      mainModel.scene.position.sub(center); // Sposta il modello al centro
+
+      // Sposta il modello al centro
+      mainModel.scene.position.sub(center);
+
+      // Ottieni le dimensioni del modello
+      const size = new Vector3();
+      boundingBox.getSize(size);
+
+      console.log("Dimensioni del modello:", size);
+
+      // Se il modello è troppo grande, ridimensionalo
+      const maxDimension = Math.max(size.x, size.y, size.z);
+      if (maxDimension > 5) { // Imposta una soglia massima
+        mainModel.scene.scale.setScalar(5 / maxDimension); // Ridimensiona proporzionalmente
+      }
     }
   }, [mainModel]);
 
@@ -68,7 +82,7 @@ export default function BedModel({
     <group>
       {/* Spinner di caricamento */}
       {!mainModel && (
-        <mesh position={[0, 0, 0]}>
+        <mesh position={[0, 0, -5]}>
           <boxGeometry args={[1, 1, 1]} />
           <meshBasicMaterial color="gray" wireframe />
           <Text position={[0, 1, 0]} fontSize={0.5}>
@@ -79,7 +93,7 @@ export default function BedModel({
 
       {/* Modello principale */}
       {mainModel && (
-        <mesh ref={bedRef} position={[0, 0, 0]}>
+        <mesh ref={bedRef} position={[0, 0, -5]}>
           <primitive object={mainModel.scene} scale={[1, 1, 1]} />
           {/* Applica un materiale con colore del legno naturale */}
           {color && (
@@ -95,12 +109,12 @@ export default function BedModel({
 
       {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
       {evolutionKit === "piedini" && kitPiedini && (
-        <primitive object={kitPiedini.scene} position={[0, -0.5, 0]} scale={1} />
+        <primitive object={kitPiedini.scene} position={[0, -0.5, -5]} scale={1} />
       )}
 
       {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
       {evolutionKit === "piedoni" && kitPiedoni && (
-        <primitive object={kitPiedoni.scene} position={[0, -0.5, 0]} scale={1} />
+        <primitive object={kitPiedoni.scene} position={[0, -0.5, -5]} scale={1} />
       )}
 
       {/* Dimensioni visualizzate se richieste */}
@@ -110,7 +124,7 @@ export default function BedModel({
             position={[
               0,
               -0.1,
-              mainModel.scene.children[0].geometry.boundingSphere.radius + 0.1,
+              -5 + mainModel.scene.children[0].geometry.boundingSphere.radius + 0.1,
             ]}
             rotation={[-Math.PI / 2, 0, 0]}
             fontSize={0.1}
@@ -119,7 +133,7 @@ export default function BedModel({
             {"190 cm"}
           </Text>
           <Text
-            position={[0.5, -0.1, 0]}
+            position={[0.5, -0.1, -5]}
             rotation={[-Math.PI / 2, 0, Math.PI / 2]}
             fontSize={0.1}
             color="yellow"
