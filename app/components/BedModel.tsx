@@ -1,15 +1,15 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Text } from "@react-three/drei";
 import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 
 interface BedModelProps {
-  size: string; // Dimensioni del letto (es. "190x80", "160x80", ecc.)
+  size: string;
   sideRails: string;
   evolutionKit: string;
-  isBioPaint: boolean; // Stato per Bio Paint
+  isBioPaint: boolean;
   showDimensions: boolean;
 }
 
@@ -21,21 +21,22 @@ export default function BedModel({
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<THREE.Group>(null);
+  const [modelLoaded, setModelLoaded] = useState(false);
 
   useEffect(() => {
     const loadModel = async () => {
       try {
         console.log("Caricamento del file .obj...");
         const objLoader = new OBJLoader();
-        const model = await objLoader.loadAsync("/models/EARTH _senza_sponde.obj"); // Nome corretto del file
+        const model = await objLoader.loadAsync("/models/EARTH_senza_sponde.obj"); // Assicurati che il nome sia corretto
 
         if (model && model.children.length > 0) {
           console.log("Modello caricato:", model);
 
-          // Applica un materiale marrone a tutte le mesh del modello
+          // Applica un materiale visibile
           model.traverse((child) => {
             if (child instanceof THREE.Mesh) {
-              child.material = new THREE.MeshStandardMaterial({ color: 0x8B4513 }); // Colore marrone
+              child.material = new THREE.MeshStandardMaterial({ color: 0x8b4513 }); // Colore marrone
             }
           });
 
@@ -45,22 +46,25 @@ export default function BedModel({
           boundingBox.getCenter(center);
           model.position.sub(center);
 
-          // Normalizza le dimensioni del modello
+          // Normalizza le dimensioni
           const sizeX = boundingBox.max.x - boundingBox.min.x;
-          const sizeZ = boundingBox.max.z - boundingBox.min.z;
           const sizeY = boundingBox.max.y - boundingBox.min.y;
+          const sizeZ = boundingBox.max.z - boundingBox.min.z;
+          console.log("Bounding Box:", boundingBox.min, boundingBox.max);
 
-          // Scala in modo che il letto sia ~190cm lungo
-          const scaleFactor = Math.max(sizeX, sizeZ) / 1.9;
-          model.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
+          // Scala in base alla lunghezza di 190cm
+          const scaleFactor = 1.9 / Math.max(sizeX, sizeZ);
+          model.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-          // Aggiusta la posizione verticale per evitare che il modello si affondi nel pavimento
-          model.position.setY(-boundingBox.min.y * (1 / scaleFactor));
+          // Aggiusta la posizione per evitare che affondi nel pavimento
+          model.position.setY(-boundingBox.min.y * scaleFactor);
 
-          // Aggiungi il modello al riferimento
+          // Aggiungi il modello al gruppo
           if (bedRef.current) {
             bedRef.current.add(model);
           }
+
+          setModelLoaded(true); // Segna il modello come caricato
         }
       } catch (error) {
         console.error("Errore durante il caricamento del modello:", error);
@@ -70,52 +74,45 @@ export default function BedModel({
     loadModel();
   }, []);
 
-  // Funzione per calcolare la scala basata sulle dimensioni selezionate
-  const getScaleFactor = (size: string): number => {
-    const sizeMap: { [key: string]: number } = {
-      "190x80": 1, // Dimensione predefinita
-      "160x80": 0.84, // Scala proporzionale
-      "200x90": 1.05, // Scala proporzionale
-    };
-    return sizeMap[size] || 1; // Valore predefinito
-  };
-
-  // Rotazione automatica lenta intorno all'asse Y
-  useFrame((state, delta) => {
+  // Rotazione automatica del letto
+  useFrame((_, delta) => {
     if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
+      bedRef.current.rotation.y += delta * 0.01;
     }
   });
 
   return (
-    <group ref={bedRef} scale={getScaleFactor(size)}>
-      {/* Pavimento della stanza */}
-      <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[10, 10]} />
-        <meshStandardMaterial color="gray" roughness={0.8} />
-      </mesh>
+    <>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[5, 10, 5]} intensity={1} />
 
-      {/* Dimensioni visualizzate se richieste */}
-      {showDimensions && (
-        <>
-          <Text
-            position={[0, -0.1, 0.95]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            fontSize={0.1}
-            color="yellow"
-          >
-            {"190 cm"}
-          </Text>
-          <Text
-            position={[0.4, -0.1, 0]}
-            rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-            fontSize={0.1}
-            color="yellow"
-          >
-            {"80 cm"}
-          </Text>
-        </>
-      )}
-    </group>
+      <group ref={bedRef} scale={1}>
+        {/* Debug: Aiuto visivo per vedere il bounding box */}
+        {modelLoaded && (
+          <mesh>
+            <boxHelper args={[bedRef.current, 0xff0000]} />
+          </mesh>
+        )}
+
+        {/* Pavimento */}
+        <mesh position={[0, -0.1, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[10, 10]} />
+          <meshStandardMaterial color="gray" roughness={0.8} />
+        </mesh>
+
+        {/* Dimensioni visualizzate se richieste */}
+        {showDimensions && (
+          <>
+            <Text position={[0, -0.1, 0.95]} rotation={[-Math.PI / 2, 0, 0]} fontSize={0.1} color="yellow">
+              {"190 cm"}
+            </Text>
+            <Text position={[0.4, -0.1, 0]} rotation={[-Math.PI / 2, 0, Math.PI / 2]} fontSize={0.1} color="yellow">
+              {"80 cm"}
+            </Text>
+          </>
+        )}
+      </group>
+    </>
   );
 }
+
