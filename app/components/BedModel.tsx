@@ -8,7 +8,7 @@ import { MeshStandardMaterial, Box3, Vector3 } from "three";
 interface BedModelProps {
   size: string;
   sideRails: string;
-  evolutionKit: string;
+  evolutionKit: string; // Nuova prop per gestire il kit (piedini/piedoni)
   color: string; // Colore del letto
   showDimensions: boolean;
 }
@@ -20,8 +20,10 @@ export default function BedModel({
   color,
   showDimensions,
 }: BedModelProps) {
-  const bedRef = useRef<any>(null); // Riferimento al modello
+  const bedRef = useRef<any>(null); // Riferimento al modello principale
   const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
+  const [kitPiedini, setKitPiedini] = useLoader(GLTFLoader, "/models/Kit_piedini.glb");
+  const [kitPiedoni, setKitPiedoni] = useLoader(GLTFLoader, "/models/Kit_piedoni.glb");
 
   // Funzione per centrare il modello
   useEffect(() => {
@@ -55,6 +57,16 @@ export default function BedModel({
           />
         )}
       </mesh>
+
+      {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
+      {evolutionKit === "piedini" && (
+        <primitive object={kitPiedini.scene} position={[0, -0.5, 0]} scale={1} />
+      )}
+
+      {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
+      {evolutionKit === "piedoni" && (
+        <primitive object={kitPiedoni.scene} position={[0, -0.5, 0]} scale={1} />
+      )}
 
       {/* Dimensioni visualizzate se richieste */}
       {showDimensions && (
