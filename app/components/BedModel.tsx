@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
+import { useFrame, useLoader, group } from "@react-three/fiber"; // Importa group
 import { Text } from "@react-three/drei";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { MeshStandardMaterial, Box3, Vector3 } from "three";
@@ -41,7 +41,7 @@ export default function BedModel({
   });
 
   return (
-    <group>
+    <group> {/* Usa il componente group */}
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
         <primitive object={gltf.scene} scale={[0.1, 0.1, 0.1]} /> {/* Scala ridotta */}
@@ -62,7 +62,9 @@ export default function BedModel({
           object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene}
           position={[0, -0.5, 0]}
           scale={0.5} {/* Aumenta la scala */}
-          onError={(error) => console.error("Errore durante il caricamento di Kit_piedini.gltf:", error)}
+          onError={(error) =>
+            console.error("Errore durante il caricamento di Kit_piedini.gltf:", error)
+          }
         />
       )}
 
@@ -72,7 +74,9 @@ export default function BedModel({
           object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene}
           position={[0, -0.5, 0]}
           scale={0.5} {/* Aumenta la scala */}
-          onError={(error) => console.error("Errore durante il caricamento di Kit_piedoni.gltf:", error)}
+          onError={(error) =>
+            console.error("Errore durante il caricamento di Kit_piedoni.gltf:", error)
+          }
         />
       )}
 
