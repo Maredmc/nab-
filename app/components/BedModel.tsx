@@ -21,7 +21,7 @@ export default function BedModel({
   showDimensions,
 }: BedModelProps) {
   const bedRef = useRef<any>(null); // Riferimento al modello principale
-  const gltf = useLoader(GLTFLoader, "/models/EC19080.gltf");
+  const gltf = useLoader(GLTFLoader, "/models/EARTH_senza_sponde.glb");
   const [kitPiedini, setKitPiedini] = useLoader(GLTFLoader, "/models/Kit_piedini.glb");
   const [kitPiedoni, setKitPiedoni] = useLoader(GLTFLoader, "/models/Kit_piedoni.glb");
 
