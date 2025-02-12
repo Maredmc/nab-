@@ -43,18 +43,18 @@ export default function BedModel({
   return (
     <group>
       {/* Gruppo contenitore centrato */}
-      <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[1, 1, 1]} />
-        {/* Applica un materiale con colore del legno naturale */}
-        {color && (
-          <meshStandardMaterial
-            attach="material"
-            color={color}
-            roughness={0.7} // Simula il legno ruvido
-            metalness={0.1} // Riduce l'effetto metallico
-          />
-        )}
-      </mesh>
+<mesh ref={bedRef} position={[0, 0, 0]} scale={[0.1, 0.1, 0.1]}>
+  <primitive object={gltf.scene} />
+  {/* Applica un materiale con colore del legno naturale */}
+  {color && (
+    <meshStandardMaterial
+      attach="material"
+      color={color}
+      roughness={0.7} // Simula il legno ruvido
+      metalness={0.1} // Riduce l'effetto metallico
+    />
+  )}
+</mesh>
 
       {/* Dimensioni visualizzate se richieste */}
       {showDimensions && (
