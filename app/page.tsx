@@ -51,30 +51,41 @@ export default function BedConfigurator() {
       <div className="flex flex-1 overflow-hidden">
         {/* Sezione del modello 3D */}
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-          <Canvas camera={{ position: [0, 2, 5] }}>
-            {/* Luci */}
-            <ambientLight intensity={0.7} />
-            <spotLight position={[15, 20, 15]} angle={0.3} penumbra={1} intensity={1.5} />
-            <directionalLight position={[10, 10, 5]} intensity={0.8} />
+<Canvas camera={{ position: [0, 2, 5] }}>
+  {/* Luci realistiche */}
+  <ambientLight intensity={0.5} /> {/* Luce ambientale soft */}
+  <directionalLight
+    position={[5, 10, 5]}
+    intensity={1.5}
+    castShadow
+    shadow-mapSize-width={1024}
+    shadow-mapSize-height={1024}
+    shadow-camera-far={50}
+    shadow-camera-left={-10}
+    shadow-camera-right={10}
+    shadow-camera-top={10}
+    shadow-camera-bottom={-10}
+  /> {/* Luce direzionale con ombre */}
+  <pointLight position={[1, 2, 3]} intensity={0.8} /> {/* Luce puntiforme per dettagli */}
 
-            {/* Modello del letto */}
-            <BedModel
-              size={bedSize}
-              sideRails={sideRails}
-              evolutionKit={evolutionKit}
-              isBioPaint={isBioPaint} // Passa lo stato Bio Paint
-              showDimensions={showDimensions}
-            />
+  {/* Modello del letto */}
+  <BedModel
+    size={bedSize}
+    sideRails={sideRails}
+    evolutionKit={evolutionKit}
+    isBioPaint={isBioPaint} // Passa lo stato Bio Paint
+    showDimensions={showDimensions}
+  />
 
-            {/* OrbitControls per ruotare il modello manualmente */}
-            <OrbitControls
-              enableZoom={true}
-              enableRotate={true}
-              enablePan={false}
-              target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
-              autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
-            />
-          </Canvas>
+  {/* OrbitControls per ruotare il modello manualmente */}
+  <OrbitControls
+    enableZoom={true}
+    enableRotate={true}
+    enablePan={false}
+    target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
+    autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
+  />
+</Canvas>
 
           {/* Pulsanti inferiori */}
           <div className="absolute bottom-4 right-4 space-x-2">
