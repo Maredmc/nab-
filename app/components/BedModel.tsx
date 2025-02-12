@@ -48,8 +48,14 @@ export default function BedModel({
           // Normalizza le dimensioni del modello
           const sizeX = boundingBox.max.x - boundingBox.min.x;
           const sizeZ = boundingBox.max.z - boundingBox.min.z;
-          const scaleFactor = Math.max(sizeX, sizeZ) / 1.9; // Scala in modo che il letto sia ~190cm lungo
+          const sizeY = boundingBox.max.y - boundingBox.min.y;
+
+          // Scala in modo che il letto sia ~190cm lungo
+          const scaleFactor = Math.max(sizeX, sizeZ) / 1.9;
           model.scale.set(1 / scaleFactor, 1 / scaleFactor, 1 / scaleFactor);
+
+          // Aggiusta la posizione verticale per evitare che il modello si affondi nel pavimento
+          model.position.setY(-boundingBox.min.y * (1 / scaleFactor));
 
           // Aggiungi il modello al riferimento
           if (bedRef.current) {
