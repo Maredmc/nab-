@@ -36,25 +36,25 @@ export default function BedConfigurator() {
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
         <div className={`relative ${isFullscreen ? "w-full" : "w-[60%]"}`}>
-<Canvas camera={{ position: [0, 5, 15] }}>
-  <ambientLight intensity={0.5} />
-  <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-  <BedModel
-    size={bedSize}
-    sideRails={sideRails}
-    evolutionKit={evolutionKit}
-    color={bedColor}
-    showDimensions={showDimensions}
-  />
-  {/* OrbitControls per ruotare il modello manualmente */}
-  <OrbitControls
-    enableZoom={true}
-    enableRotate={true}
-    enablePan={false}
-    target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
-    autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
-  />
-</Canvas>
+          <Canvas camera={{ position: [0, 2, 5] }}>
+            <ambientLight intensity={0.5} />
+            <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+            <BedModel
+              size={bedSize}
+              sideRails={sideRails}
+              evolutionKit={evolutionKit}
+              color={bedColor}
+              showDimensions={showDimensions}
+            />
+            {/* OrbitControls per ruotare il modello manualmente */}
+            <OrbitControls
+              enableZoom={true}
+              enableRotate={true}
+              enablePan={false}
+              target={[0, 0, 0]} // Imposta il punto di rotazione al centro del mondo
+              autoRotate={false} // Disabilita la rotazione automatica di OrbitControls
+            />
+          </Canvas>
           <div className="absolute bottom-4 right-4 space-x-2">
             <button
               onClick={toggleFullscreen}
