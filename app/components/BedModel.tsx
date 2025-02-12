@@ -12,7 +12,7 @@ export default function BedModel() {
       try {
         const loader = new GLTFLoader();
         loader.setPath("/models/"); // Specifica il percorso della cartella
-        const gltf = await loader.loadAsync("EARTH_senza_sponde.gltf");
+        const gltf = await loader.loadAsync("EC19080.gltf");
 
         if (gltf.scene) {
           // Centra il modello
