@@ -4,28 +4,15 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-interface BedModelProps {
-  size: string;
-  sideRails: string;
-  evolutionKit: string;
-  isBioPaint: boolean;
-  showDimensions: boolean;
-}
-
-export default function BedModel({
-  size,
-  sideRails,
-  evolutionKit,
-  isBioPaint,
-  showDimensions,
-}: BedModelProps) {
+export default function BedModel() {
   const bedRef = useRef<THREE.Group>(null);
 
   useEffect(() => {
     const loadModel = async () => {
       try {
         const loader = new GLTFLoader();
-        const gltf = await loader.loadAsync("/models/EARTH_senza_sponde.gltf");
+        loader.setPath("/models/"); // Specifica il percorso della cartella
+        const gltf = await loader.loadAsync("EARTH_senza_sponde.gltf");
 
         if (gltf.scene) {
           // Centra il modello
@@ -55,13 +42,6 @@ export default function BedModel({
 
     loadModel();
   }, []);
-
-  // Rotazione automatica del letto
-  useFrame((_, delta) => {
-    if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.01;
-    }
-  });
 
   return (
     <group ref={bedRef} position={[0, 0, 0]} scale={1}>
