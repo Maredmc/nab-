@@ -1,92 +1,35 @@
 "use client";
 import { useRef, useEffect } from "react";
-import { useFrame, useLoader } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
+import { useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { MeshStandardMaterial, Box3, Vector3 } from "three";
+import { Box3, Vector3 } from "three";
 
 interface BedModelProps {
-  size: string;
-  sideRails: string;
-  evolutionKit: string;
-  color: string; // Colore del letto
-  showDimensions: boolean;
+  selectedAddon: string | null; // "piedini", "piedone" o null
 }
 
-export default function BedModel({
-  size,
-  sideRails,
-  evolutionKit,
-  color,
-  showDimensions,
-}: BedModelProps) {
-  const bedRef = useRef<any>(null); // Riferimento al modello principale
-  const gltf = useLoader(GLTFLoader, "/models/completo_con_piedini.gltf");
+export default function BedModel({ selectedAddon }: BedModelProps) {
+  const bedRef = useRef<any>(null);
+  const gltfBed = useLoader(GLTFLoader, "/models/senza_sponde_a_terra.gltf");
+  const gltfPiedini = useLoader(GLTFLoader, "/models/piedini.gltf");
+  const gltfPiedone = useLoader(GLTFLoader, "/models/piedone.gltf");
 
-  // Funzione per centrare il modello
+  // Centrare il modello principale
   useEffect(() => {
-    if (gltf.scene && gltf.scene.children.length > 0) {
-      const boundingBox = new Box3().setFromObject(gltf.scene);
+    if (gltfBed.scene) {
+      const boundingBox = new Box3().setFromObject(gltfBed.scene);
       const center = new Vector3();
       boundingBox.getCenter(center);
-      gltf.scene.position.sub(center); // Sposta il modello al centro
+      gltfBed.scene.position.sub(center);
     }
-  }, [gltf]);
-
-  // Rotazione automatica lenta intorno all'asse Y
-  useFrame((state, delta) => {
-    if (bedRef.current) {
-      bedRef.current.rotation.y += delta * 0.01; // Rotazione molto lenta
-    }
-  });
+  }, [gltfBed]);
 
   return (
-    <group>
-      {/* Gruppo contenitore centrato */}
-      <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[3, 3, 3]} /> {/* Scala ridotta */}
-        {/* Applica un materiale con colore del legno naturale */}
-        {color && (
-          <meshStandardMaterial
-            attach="material"
-            color={color}
-            roughness={0.7} // Simula il legno ruvido
-            metalness={0.1} // Riduce l'effetto metallico
-          />
-        )}
-      </mesh>
-
-      {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
-      {evolutionKit === "piedini" && (
-        <primitive object={useLoader(GLTFLoader, "/models/piedini.gltf").scene} position={[0, 0, 0]} scale={3} />
-      )}
-
-      {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
-      {evolutionKit === "piedoni" && (
-        <primitive object={useLoader(GLTFLoader, "/models/piedoni.gltf").scene} position={[0, 0, 0]} scale={3} />
-      )}
-
-      {/* Dimensioni visualizzate se richieste */}
-      {showDimensions && (
-        <>
-          <Text
-            position={[0, -0.1, gltf.scene.children[0].geometry.boundingSphere.radius + 0.1]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            fontSize={0.1}
-            color="yellow"
-          >
-            {"190 cm"}
-          </Text>
-          <Text
-            position={[0.5, -0.1, 0]}
-            rotation={[-Math.PI / 2, 0, Math.PI / 2]}
-            fontSize={0.1}
-            color="yellow"
-          >
-            {"80 cm"}
-          </Text>
-        </>
-      )}
+    <group ref={bedRef}>
+      <primitive object={gltfBed.scene} />
+      {selectedAddon === "piedini" && <primitive object={gltfPiedini.scene} />}
+      {selectedAddon === "piedone" && <primitive object={gltfPiedone.scene} />}
     </group>
   );
 }
+
