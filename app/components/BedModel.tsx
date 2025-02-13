@@ -16,7 +16,7 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
 
   const { camera } = useThree();
 
-  // Calcola la posizione della base del letto e la posizione per i piedini/piedoni
+  // Allineare il modello principale alla base
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -29,34 +29,25 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       gltfBed.scene.position.y -= minY; // Allineiamo il letto al suolo
 
       // Spostiamo la camera più vicina al modello
-      camera.position.set(0, 1, 2.5);
+      camera.position.set(0, 1, 3);
     }
   }, [gltfBed, camera]);
-
-  // Funzione per ottenere la posizione esatta sotto il letto
-  const getAddonPosition = (addonScene: any) => {
-    if (!bedRef.current || !addonScene) return [0, 0, 0];
-
-    const bedBox = new Box3().setFromObject(bedRef.current);
-    const addonBox = new Box3().setFromObject(addonScene);
-
-    const bedMinY = bedBox.min.y; // Punto più basso del letto
-    const addonHeight = addonBox.max.y - addonBox.min.y; // Altezza dei piedini/piedone
-
-    return [0, bedMinY - addonHeight / 2, 0]; // Posizioniamo i piedini/piedoni sotto il letto
-  };
 
   return (
     <group ref={bedRef}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Aggiunta dinamica del modello selezionato con posizione corretta */}
+      {/* Piedini o Piedone */}
       {selectedAddon === "piedini" && (
-        <primitive object={gltfPiedini.scene} position={getAddonPosition(gltfPiedini.scene)} />
+        <group position={[0, -0.01, 0]}>
+          <primitive object={gltfPiedini.scene} />
+        </group>
       )}
       {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={getAddonPosition(gltfPiedone.scene)} />
+        <group position={[0, -0.01, 0]}>
+          <primitive object={gltfPiedone.scene} />
+        </group>
       )}
     </group>
   );
