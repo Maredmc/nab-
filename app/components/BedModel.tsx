@@ -29,8 +29,8 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       gltfBed.scene.position.sub(center);
 
       setBedBaseY(boundingBox.min.y); // Base del letto
-      setBedWidth((boundingBox.max.x - boundingBox.min.x) / 2); // Metà larghezza
-      setBedLength((boundingBox.max.z - boundingBox.min.z) / 2); // Metà lunghezza
+      setBedWidth((boundingBox.max.x - boundingBox.min.x) / 2); // Larghezza metà
+      setBedLength((boundingBox.max.z - boundingBox.min.z) / 2); // Lunghezza metà
 
       camera.position.set(0, 1, 3);
     }
@@ -49,12 +49,12 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
     }
   }, [selectedAddon, gltfPiedini, gltfPiedone]);
 
-  // Posizioni precise per i piedini/piedone (quattro angoli del letto)
+  // Posizioni precise per i piedini/piedone (quattro angoli)
   const legPositions = [
-    [-bedWidth + 0.05, bedBaseY - addonHeight, -bedLength + 0.05], // Angolo sinistro posteriore
-    [bedWidth - 0.05, bedBaseY - addonHeight, -bedLength + 0.05],  // Angolo destro posteriore
-    [-bedWidth + 0.05, bedBaseY - addonHeight, bedLength - 0.05],  // Angolo sinistro anteriore
-    [bedWidth - 0.05, bedBaseY - addonHeight, bedLength - 0.05]   // Angolo destro anteriore
+    [-bedWidth, bedBaseY - addonHeight, -bedLength], // Angolo sinistro posteriore
+    [bedWidth, bedBaseY - addonHeight, -bedLength],  // Angolo destro posteriore
+    [-bedWidth, bedBaseY - addonHeight, bedLength],  // Angolo sinistro anteriore
+    [bedWidth, bedBaseY - addonHeight, bedLength]   // Angolo destro anteriore
   ];
 
   return (
