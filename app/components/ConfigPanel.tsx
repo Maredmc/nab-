@@ -30,18 +30,9 @@ export default function ConfigPanel({
   updateSelectedAddon,
   updateTotalPrice,
 }: ConfigPanelProps) {
-  const [scrollProgress, setScrollProgress] = useState(0)
-  const [showDrawer, setShowDrawer] = useState(false)
-  const panelRef = useRef<HTMLDivElement>(null)
-
-  const colorOptions = [
-    { id: "natural", name: "Legno naturale", hex: "#D4B78F" },
-    { id: "white", name: "Bio paint (bianco 9010)", hex: "#FFFFFF" },
-  ]
-
   return (
-    <div className="config-panel p-4 bg-white shadow-lg rounded-md">
-      <h3 className="text-lg font-semibold mb-4">Configura il tuo letto</h3>
+    <div className="w-[40%] p-6 bg-white shadow-lg rounded-lg">
+      <h3 className="text-xl font-semibold mb-4">Configura il tuo letto</h3>
 
       {/* Selezione Piedini/Piedone */}
       <div className="mb-4">
