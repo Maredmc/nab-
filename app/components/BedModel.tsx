@@ -16,8 +16,10 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
 
   const { camera } = useThree();
   const [bedBaseY, setBedBaseY] = useState(0);
+  const [bedWidth, setBedWidth] = useState(0);
+  const [bedLength, setBedLength] = useState(0);
 
-  // Calcoliamo la posizione della base del letto
+  // Calcoliamo la posizione della base del letto e le sue dimensioni
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -26,23 +28,36 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       gltfBed.scene.position.sub(center);
 
       setBedBaseY(boundingBox.min.y); // Base del letto
+      setBedWidth((boundingBox.max.x - boundingBox.min.x) / 2 - 0.05); // Metà larghezza con offset di precisione
+      setBedLength((boundingBox.max.z - boundingBox.min.z) / 2 - 0.05); // Metà lunghezza con offset di precisione
 
       camera.position.set(0, 1, 3);
     }
   }, [gltfBed, camera]);
+
+  // Posizioni precise per i piedini/piedone (quattro angoli del letto)
+  const legPositions = [
+    [-bedWidth, bedBaseY, -bedLength], // Angolo sinistro posteriore
+    [bedWidth, bedBaseY, -bedLength],  // Angolo destro posteriore
+    [-bedWidth, bedBaseY, bedLength],  // Angolo sinistro anteriore
+    [bedWidth, bedBaseY, bedLength]   // Angolo destro anteriore
+  ];
 
   return (
     <group ref={bedRef}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini/Piedone posizionati manualmente */}
-      {selectedAddon === "piedini" && (
-        <primitive object={gltfPiedini.scene} position={[-2, bedBaseY, -0.5]} />
-      )}
-      {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={[-2, bedBaseY, -0.5]} />
-      )}
+      {/* Posizionamento preciso dei piedini/piedone agli angoli */}
+      {selectedAddon === "piedini" &&
+        legPositions.map((pos, index) => (
+          <primitive key={index} object={gltfPiedini.scene.clone()} position={pos} />
+        ))}
+
+      {selectedAddon === "piedone" &&
+        legPositions.map((pos, index) => (
+          <primitive key={index} object={gltfPiedone.scene.clone()} position={pos} />
+        ))}
     </group>
   );
 }
