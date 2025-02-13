@@ -40,27 +40,36 @@ export default function ConfigPanel({
   ]
 
   return (
-    <div className="config-panel">
-      <h3>Configura il tuo letto</h3>
+    <div className="config-panel p-4 bg-white shadow-lg rounded-md">
+      <h3 className="text-lg font-semibold mb-4">Configura il tuo letto</h3>
 
       {/* Selezione Piedini/Piedone */}
-      <div className="option-group">
-        <Label>Kit di supporto</Label>
-        <div className="option-buttons">
+      <div className="mb-4">
+        <Label className="block text-sm font-medium text-gray-700">Kit di supporto</Label>
+        <div className="mt-2 flex gap-2">
           <button
-            className={cn("option-btn", selectedAddon === "piedini" && "selected")}
+            className={cn(
+              "px-4 py-2 border rounded-md text-sm",
+              selectedAddon === "piedini" ? "bg-gray-800 text-white" : "bg-gray-200"
+            )}
             onClick={() => updateSelectedAddon("piedini")}
           >
-            Aggiungi Piedini
+            Piedini 11cm
           </button>
           <button
-            className={cn("option-btn", selectedAddon === "piedone" && "selected")}
+            className={cn(
+              "px-4 py-2 border rounded-md text-sm",
+              selectedAddon === "piedone" ? "bg-gray-800 text-white" : "bg-gray-200"
+            )}
             onClick={() => updateSelectedAddon("piedone")}
           >
-            Aggiungi Piedone
+            Piedoni 23cm
           </button>
           <button
-            className={cn("option-btn", selectedAddon === null && "selected")}
+            className={cn(
+              "px-4 py-2 border rounded-md text-sm",
+              selectedAddon === null ? "bg-gray-800 text-white" : "bg-gray-200"
+            )}
             onClick={() => updateSelectedAddon(null)}
           >
             Nessun supporto
