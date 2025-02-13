@@ -58,12 +58,12 @@ export default function BedModel({
 
       {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
       {evolutionKit === "piedini" && (
-        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene} position={[0, -0.5, 0]} scale={3} />
+        <primitive object={useLoader(GLTFLoader, "/models/piedini.gltf").scene} position={[0, -0.5, 0]} scale={3} />
       )}
 
       {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
       {evolutionKit === "piedoni" && (
-        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene} position={[0, -0.5, 0]} scale={3} />
+        <primitive object={useLoader(GLTFLoader, "/models/piedoni.gltf").scene} position={[0, -0.5, 0]} scale={3} />
       )}
 
       {/* Dimensioni visualizzate se richieste */}
