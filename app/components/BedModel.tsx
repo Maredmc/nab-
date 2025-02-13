@@ -44,7 +44,7 @@ export default function BedModel({
     <group>
       {/* Gruppo contenitore centrato */}
       <mesh ref={bedRef} position={[0, 0, 0]}>
-        <primitive object={gltf.scene} scale={[0.2, 0.2, 0.2]} /> {/* Scala ridotta */}
+        <primitive object={gltf.scene} scale={[0.8, 0.8, 0.8]} /> {/* Scala ridotta */}
         {/* Applica un materiale con colore del legno naturale */}
         {color && (
           <meshStandardMaterial
@@ -58,12 +58,12 @@ export default function BedModel({
 
       {/* Mostra Kit_piedini se evolutionKit === "piedini" */}
       {evolutionKit === "piedini" && (
-        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene} position={[0, -0.5, 0]} scale={0.2} />
+        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedini.gltf").scene} position={[0, -0.5, 0]} scale={0.8} />
       )}
 
       {/* Mostra Kit_piedoni se evolutionKit === "piedoni" */}
       {evolutionKit === "piedoni" && (
-        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene} position={[0, -0.5, 0]} scale={0.2} />
+        <primitive object={useLoader(GLTFLoader, "/models/Kit_piedoni.gltf").scene} position={[0, -0.5, 0]} scale={0.8} />
       )}
 
       {/* Dimensioni visualizzate se richieste */}
