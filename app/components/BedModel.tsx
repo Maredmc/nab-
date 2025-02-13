@@ -16,9 +16,11 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
 
   const { camera } = useThree();
   const [bedBaseY, setBedBaseY] = useState(0);
+  const [bedWidth, setBedWidth] = useState(0);
+  const [bedLength, setBedLength] = useState(0);
   const [addonHeight, setAddonHeight] = useState(0);
 
-  // Calcoliamo la posizione della base del letto
+  // Calcoliamo la posizione della base del letto e le sue dimensioni
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -26,10 +28,9 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       boundingBox.getCenter(center);
       gltfBed.scene.position.sub(center);
 
-      const minY = boundingBox.min.y;
-      gltfBed.scene.position.y -= minY;
-
-      setBedBaseY(minY); // Salviamo la base del letto
+      setBedBaseY(boundingBox.min.y); // Base del letto
+      setBedWidth((boundingBox.max.x - boundingBox.min.x) / 2); // Metà larghezza
+      setBedLength((boundingBox.max.z - boundingBox.min.z) / 2); // Metà lunghezza
 
       camera.position.set(0, 1, 3);
     }
@@ -48,18 +49,29 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
     }
   }, [selectedAddon, gltfPiedini, gltfPiedone]);
 
+  // Posizioni precise per i piedini/piedone (quattro angoli del letto)
+  const legPositions = [
+    [-bedWidth + 0.05, bedBaseY - addonHeight, -bedLength + 0.05], // Angolo sinistro posteriore
+    [bedWidth - 0.05, bedBaseY - addonHeight, -bedLength + 0.05],  // Angolo destro posteriore
+    [-bedWidth + 0.05, bedBaseY - addonHeight, bedLength - 0.05],  // Angolo sinistro anteriore
+    [bedWidth - 0.05, bedBaseY - addonHeight, bedLength - 0.05]   // Angolo destro anteriore
+  ];
+
   return (
     <group ref={bedRef}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini/Piedone perfettamente agganciati al letto */}
-      {selectedAddon === "piedini" && (
-        <primitive object={gltfPiedini.scene} position={[-2, bedBaseY - addonHeight, -0]} />
-      )}
-      {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={[-2, bedBaseY - addonHeight, -0.5]} />
-      )}
+      {/* Posizionamento preciso dei piedini/piedone agli angoli */}
+      {selectedAddon === "piedini" &&
+        legPositions.map((pos, index) => (
+          <primitive key={index} object={gltfPiedini.scene.clone()} position={pos} />
+        ))}
+
+      {selectedAddon === "piedone" &&
+        legPositions.map((pos, index) => (
+          <primitive key={index} object={gltfPiedone.scene.clone()} position={pos} />
+        ))}
     </group>
   );
 }
