@@ -58,7 +58,7 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
         <primitive object={gltfPiedini.scene} position={[-2, bedBaseY - addonHeight, -0]} />
       )}
       {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={[-3, bedBaseY - addonHeight, -0]} />
+        <primitive object={gltfPiedone.scene} position={[-2, bedBaseY - addonHeight, -1]} />
       )}
     </group>
   );
