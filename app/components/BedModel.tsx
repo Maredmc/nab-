@@ -38,17 +38,13 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini o Piedone */}
-      {selectedAddon === "piedini" && (
-        <group position={[0, -0.01, 0]}>
-          <primitive object={gltfPiedini.scene} />
-        </group>
-      )}
-      {selectedAddon === "piedone" && (
-        <group position={[0, -0.01, 0]}>
-          <primitive object={gltfPiedone.scene} />
-        </group>
-      )}
+      {/* Piedini e Piedone inclusi come mesh */}
+      <group visible={selectedAddon === "piedini"}>
+        <primitive object={gltfPiedini.scene} />
+      </group>
+      <group visible={selectedAddon === "piedone"}>
+        <primitive object={gltfPiedone.scene} />
+      </group>
     </group>
   );
 }
