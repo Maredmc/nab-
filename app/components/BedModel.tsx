@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useLoader, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Box3, Vector3 } from "three";
@@ -15,8 +15,8 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
   const gltfPiedone = useLoader(GLTFLoader, "/models/piedone.gltf");
 
   const { camera } = useThree();
+  const [modelLoaded, setModelLoaded] = useState(false);
 
-  // Allineare il modello principale alla base
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -24,27 +24,26 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       boundingBox.getCenter(center);
       gltfBed.scene.position.sub(center);
 
-      // Troviamo il punto più basso del letto
       const minY = boundingBox.min.y;
-      gltfBed.scene.position.y -= minY; // Allineiamo il letto al suolo
+      gltfBed.scene.position.y -= minY;
 
-      // Spostiamo la camera più vicina al modello
       camera.position.set(0, 1, 3);
+      setModelLoaded(true);
     }
   }, [gltfBed, camera]);
 
   return (
-    <group ref={bedRef}>
+    <group ref={bedRef} visible={modelLoaded}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini e Piedone inclusi come mesh */}
-      <group visible={selectedAddon === "piedini"}>
-        <primitive object={gltfPiedini.scene} />
-      </group>
-      <group visible={selectedAddon === "piedone"}>
-        <primitive object={gltfPiedone.scene} />
-      </group>
+      {/* Piedini e Piedoni come parte dello stesso gruppo */}
+      {modelLoaded && (
+        <>
+          <primitive object={gltfPiedini.scene} visible={selectedAddon === "piedini"} />
+          <primitive object={gltfPiedone.scene} visible={selectedAddon === "piedone"} />
+        </>
+      )}
     </group>
   );
 }
