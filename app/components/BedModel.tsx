@@ -16,7 +16,7 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
 
   const { camera } = useThree();
 
-  // Funzione per centrare il letto e ottenere la base
+  // Calcola la posizione della base del letto e la posizione per i piedini/piedoni
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -24,22 +24,26 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       boundingBox.getCenter(center);
       gltfBed.scene.position.sub(center);
 
-      // Calcoliamo la posizione alla base del letto
+      // Troviamo il punto più basso del letto
       const minY = boundingBox.min.y;
-      gltfBed.scene.position.y -= minY;
+      gltfBed.scene.position.y -= minY; // Allineiamo il letto al suolo
 
       // Spostiamo la camera più vicina al modello
       camera.position.set(0, 1, 2.5);
     }
   }, [gltfBed, camera]);
 
-  // Funzione per posizionare i piedini/piedone
-  const getAddonPosition = () => {
-    if (!bedRef.current) return [0, 0, 0];
+  // Funzione per ottenere la posizione esatta sotto il letto
+  const getAddonPosition = (addonScene: any) => {
+    if (!bedRef.current || !addonScene) return [0, 0, 0];
 
-    const boundingBox = new Box3().setFromObject(bedRef.current);
-    const minY = boundingBox.min.y;
-    return [0, minY, 0]; // Posizioniamo il kit alla base del letto
+    const bedBox = new Box3().setFromObject(bedRef.current);
+    const addonBox = new Box3().setFromObject(addonScene);
+
+    const bedMinY = bedBox.min.y; // Punto più basso del letto
+    const addonHeight = addonBox.max.y - addonBox.min.y; // Altezza dei piedini/piedone
+
+    return [0, bedMinY - addonHeight / 2, 0]; // Posizioniamo i piedini/piedoni sotto il letto
   };
 
   return (
@@ -49,10 +53,10 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
 
       {/* Aggiunta dinamica del modello selezionato con posizione corretta */}
       {selectedAddon === "piedini" && (
-        <primitive object={gltfPiedini.scene} position={getAddonPosition()} />
+        <primitive object={gltfPiedini.scene} position={getAddonPosition(gltfPiedini.scene)} />
       )}
       {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={getAddonPosition()} />
+        <primitive object={gltfPiedone.scene} position={getAddonPosition(gltfPiedone.scene)} />
       )}
     </group>
   );
