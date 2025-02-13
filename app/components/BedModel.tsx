@@ -15,8 +15,10 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
   const gltfPiedone = useLoader(GLTFLoader, "/models/piedone.gltf");
 
   const { camera } = useThree();
-  const [bedPosition, setBedPosition] = useState([0, 0, 0]);
+  const [bedBaseY, setBedBaseY] = useState(0);
+  const [addonHeight, setAddonHeight] = useState(0);
 
+  // Calcoliamo la posizione della base del letto
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
@@ -27,23 +29,36 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       const minY = boundingBox.min.y;
       gltfBed.scene.position.y -= minY;
 
-      setBedPosition([0, -minY, 0]); // Salviamo la posizione della base del letto
+      setBedBaseY(minY); // Salviamo la base del letto
 
       camera.position.set(0, 1, 3);
     }
   }, [gltfBed, camera]);
+
+  // Calcoliamo l'altezza dei piedini/piedone
+  useEffect(() => {
+    if (selectedAddon === "piedini" && gltfPiedini.scene) {
+      const boundingBox = new Box3().setFromObject(gltfPiedini.scene);
+      setAddonHeight(boundingBox.max.y - boundingBox.min.y);
+    } else if (selectedAddon === "piedone" && gltfPiedone.scene) {
+      const boundingBox = new Box3().setFromObject(gltfPiedone.scene);
+      setAddonHeight(boundingBox.max.y - boundingBox.min.y);
+    } else {
+      setAddonHeight(0);
+    }
+  }, [selectedAddon, gltfPiedini, gltfPiedone]);
 
   return (
     <group ref={bedRef}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini/Piedone perfettamente agganciati */}
+      {/* Piedini/Piedone perfettamente agganciati al letto */}
       {selectedAddon === "piedini" && (
-        <primitive object={gltfPiedini.scene} position={bedPosition} />
+        <primitive object={gltfPiedini.scene} position={[0, bedBaseY - addonHeight, 0]} />
       )}
       {selectedAddon === "piedone" && (
-        <primitive object={gltfPiedone.scene} position={bedPosition} />
+        <primitive object={gltfPiedone.scene} position={[0, bedBaseY - addonHeight, 0]} />
       )}
     </group>
   );
