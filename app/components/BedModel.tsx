@@ -15,7 +15,7 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
   const gltfPiedone = useLoader(GLTFLoader, "/models/piedone.gltf");
 
   const { camera } = useThree();
-  const [modelLoaded, setModelLoaded] = useState(false);
+  const [bedPosition, setBedPosition] = useState([0, 0, 0]);
 
   useEffect(() => {
     if (gltfBed.scene) {
@@ -27,22 +27,23 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
       const minY = boundingBox.min.y;
       gltfBed.scene.position.y -= minY;
 
+      setBedPosition([0, -minY, 0]); // Salviamo la posizione della base del letto
+
       camera.position.set(0, 1, 3);
-      setModelLoaded(true);
     }
   }, [gltfBed, camera]);
 
   return (
-    <group ref={bedRef} visible={modelLoaded}>
+    <group ref={bedRef}>
       {/* Modello principale */}
       <primitive object={gltfBed.scene} />
 
-      {/* Piedini e Piedoni come parte dello stesso gruppo */}
-      {modelLoaded && (
-        <>
-          <primitive object={gltfPiedini.scene} visible={selectedAddon === "piedini"} />
-          <primitive object={gltfPiedone.scene} visible={selectedAddon === "piedone"} />
-        </>
+      {/* Piedini/Piedone perfettamente agganciati */}
+      {selectedAddon === "piedini" && (
+        <primitive object={gltfPiedini.scene} position={bedPosition} />
+      )}
+      {selectedAddon === "piedone" && (
+        <primitive object={gltfPiedone.scene} position={bedPosition} />
       )}
     </group>
   );
