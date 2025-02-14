@@ -15,49 +15,34 @@ export default function BedModel({ selectedAddon }: BedModelProps) {
   const gltfPiedone = useLoader(GLTFLoader, "/models/piedone.gltf");
 
   const { camera } = useThree();
-  const [bedPosition, setBedPosition] = useState<[number, number, number]>([0, 0, 0]);
-  const [bedSize, setBedSize] = useState<{ width: number; length: number; height: number }>({
-    width: 0,
-    length: 0,
-    height: 0,
-  });
+  const [bedBaseY, setBedBaseY] = useState(0);
 
-  // Calcoliamo posizione e dimensioni del letto nel Canvas
+  // Calcoliamo la posizione della base del letto
   useEffect(() => {
     if (gltfBed.scene) {
       const boundingBox = new Box3().setFromObject(gltfBed.scene);
       const center = new Vector3();
       boundingBox.getCenter(center);
+      gltfBed.scene.position.sub(center);
 
-      // Otteniamo dimensioni reali del letto
-      const width = (boundingBox.max.x - boundingBox.min.x) / 2;
-      const length = (boundingBox.max.z - boundingBox.min.z) / 2;
-      const height = boundingBox.max.y - boundingBox.min.y;
+      setBedBaseY(boundingBox.min.y); // Base del letto
 
-      // Posizioniamo il letto al centro e salviamo posizione e dimensioni
-      gltfBed.scene.position.set(0, -boundingBox.min.y, 0);
-      setBedPosition([0, -boundingBox.min.y, 0]);
-      setBedSize({ width, length, height });
-
-      // Spostiamo la camera in posizione ottimale
       camera.position.set(0, 1, 3);
     }
   }, [gltfBed, camera]);
 
-  // Evitiamo la creazione di piedini/piedoni duplicati
-  const getAddonModel = () => {
-    if (selectedAddon === "piedini") return <primitive object={gltfPiedini.scene} position={[0, bedPosition[1], 0]} />;
-    if (selectedAddon === "piedone") return <primitive object={gltfPiedone.scene} position={[0, bedPosition[1], 0]} />;
-    return null;
-  };
-
   return (
     <group ref={bedRef}>
       {/* Modello principale */}
-      <primitive object={gltfBed.scene} position={bedPosition} />
+      <primitive object={gltfBed.scene} />
 
-      {/* Piedini/Piedone posizionati in modo unico */}
-      {getAddonModel()}
+      {/* Piedini/Piedone posizionati manualmente */}
+      {selectedAddon === "piedini" && (
+        <primitive object={gltfPiedini.scene} position={[-5.8, bedBaseY, -1.8]} />
+      )}
+      {selectedAddon === "piedone" && (
+        <primitive object={gltfPiedone.scene} position={[-5.8, bedBaseY, -1.8]} />
+      )}
     </group>
   );
 }
